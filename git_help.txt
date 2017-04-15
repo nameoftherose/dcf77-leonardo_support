@@ -1,0 +1,7 @@
+to clone the directory from github:
+   git clone https://github.com/nameoftherose/dcf77-leonardo_support.git
+to add file(s) to repository:
+   git add filenames
+to upload your changed or new files:
+   git commit -a
+   git push
