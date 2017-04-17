@@ -31,12 +31,12 @@ const uint8_t dcf77_sample_pin = 19; // A5
 const uint8_t dcf77_pin_mode = INPUT_PULLUP;  // enable internal pull up
 
 
-const uint8_t dcf77_inverted_samples = 1;
+const uint8_t dcf77_inverted_samples = 0;
 
 // The Blinkenlighty requires 1 this because the input
 // pins are loaded with LEDs. All others should prefer
 // setting this to 0 as this reduces interrupt contention.
-const uint8_t dcf77_analog_samples = 0;
+const uint8_t dcf77_analog_samples = 1;
 
 const uint8_t dcf77_monitor_led = 18;
 
@@ -643,7 +643,7 @@ void sprintlnpp16m(int16_t pp16m) {
 void setup() {
     //using namespace DCF77_Encoder;
 
-    Serial.begin(115200);
+    Serial.begin(115200);while(!Serial);
 
     pinMode(dcf77_sample_pin, dcf77_pin_mode);
 
