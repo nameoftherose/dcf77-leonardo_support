@@ -16,6 +16,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see http://www.gnu.org/licenses/
 
+
+//define BLINKENLIGHTS
+
+#define SYNCOUT
+
 #include <dcf77.h>
 
 #if defined(__AVR__)
@@ -446,7 +451,21 @@ void set_mode(const char mode) {
 }
 char get_mode() { return mode; }
 
+#ifdef SYNCOUT
+uint16_t const Half_Period = 100;
+uint8_t const sync_Pin = 5;
+uint16_t ticks = 0 ;
+uint8_t syncout_state = LOW;
+#endif
 uint8_t sample_input_pin() {
+#ifdef SYNCOUT
+    ticks ++;
+    if (ticks   == Half_Period){
+      ticks = 0;
+      syncout_state = (syncout_state == HIGH)?LOW:HIGH ;
+      digitalWrite(sync_Pin,syncout_state);
+    }
+#endif
     const uint8_t sampled_data =
     #if defined(__AVR__)
         dcf77_inverted_samples ^ (dcf77_analog_samples? (analogRead(dcf77_analog_sample_pin) > 200)
@@ -658,6 +677,10 @@ void setup() {
 
     pinMode(dcf77_sample_pin, dcf77_pin_mode);
 
+#ifdef SYNCOUT    
+    pinMode(sync_Pin, OUTPUT);
+#endif
+
 #if defined(POLLIN_DCF77)
     pinMode(gnd_pin, OUTPUT);
     digitalWrite(gnd_pin, LOW);
@@ -724,7 +747,10 @@ void setup() {
     Serial.print(F("EE Freq. Adjust: ")); sprintlnpp16m(adjust);
     #endif
     Serial.print(F("Freq. Adjust:    ")); sprintlnpp16m(Generic_1_kHz_Generator::read_adjustment());
-
+#ifdef SYNCOUT    
+    Serial.print(F("SYNCOUT Pin: D"));Serial.print(sync_Pin);
+    Serial.print(F(" Half_Period: "));Serial.print(Half_Period);
+#endif
     Serial.println();
 
     Parser::help();
