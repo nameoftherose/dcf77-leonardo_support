@@ -35,6 +35,10 @@
 #ifdef BASEBAND
 uint8_t const baseband_Pin=7;
 #endif
+#define EXT_SYNC 1
+#ifdef EXT_SYNC
+uint8_t const ext_sync_Pin = 2;
+#endif
 namespace BCD {
     typedef union {
         struct {
@@ -893,7 +897,7 @@ namespace timer_0 {
         TIMSK0 = 0;
     }
 }
- 
+#ifndef EXT_SYNC
 namespace timer_1 {
     void setup() {
         TIMSK1 = 0;  // disable timer1 interrupts
@@ -909,7 +913,8 @@ namespace timer_1 {
         TIMSK1 = (1 << OCIE1A);  // enable OCR1A match interrupt
     }
 }
- 
+#endif
+
 uint8_t stop_modulation_after_times_100ms = 5;
 DCF77::time_data_t now;
  
@@ -926,7 +931,7 @@ void modulate() {
  
     if (times_100ms == stop_modulation_after_times_100ms) {
         OCR2B = timer_2::pwm_full_carrier;
-        digitalWrite(baseband_Pin,LOW);
+        digitalWrite(7, LOW);
     }
  
     if (times_100ms < 9) {
@@ -945,13 +950,21 @@ void modulate() {
                                                                               0;
     }
 }
- 
+
+#ifndef EXT_SYNC
 ISR(TIMER1_COMPA_vect) {
     sei();
     // ensure that timer 2 can interrupt timer 1
     modulate();
 }
- 
+#else
+ISR(INT0_vect) {
+    sei();
+    // ensure that timer 2 can interrupt timer 1
+    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+    modulate();
+}
+#endif
 namespace Parser {
     void show(const DCF77::time_data_t &now) {
           cli();
@@ -1104,10 +1117,12 @@ namespace Parser {
  
 void setup() {
     timer_0::setup();
+#ifndef EXT_SYNC    
     timer_1::setup();
+#endif    
     timer_2::setup();
  
-    Serial.begin(115200);while(!Serial);
+    Serial.begin(115200);delay(5000);
  
     // compare to http://www.dcf77logs.de/ViewLog.aspx?mode=special&file=06%20-%20Schaltsekunde.log
     // set time to a leap second - because I always wanted to "see" one
@@ -1131,6 +1146,16 @@ void setup() {
     digitalWrite(baseband_Pin,LOW);
     Serial.print(F("output on pin D"));Serial.println(baseband_Pin);
 #endif
+#ifdef EXT_SYNC    
+    pinMode(ext_sync_Pin, INPUT ); //Sync Input
+    // Global Enable INT0 interrupt
+    EIMSK |= ( 1 << INT0);
+    // Signal change triggers interrupt
+    EICRA |= ( 1 << ISC00);
+    EICRA |= ( 0 << ISC01);
+    Serial.print(F("Sync Input on pin D"));Serial.println(ext_sync_Pin);   
+#endif    
+    delay(5000);
 }
  
  
