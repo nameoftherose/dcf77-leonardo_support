@@ -31,7 +31,10 @@
 // If you connect 1k resistor to the output pin then
 // the current will stay below 5 mA which will keep
 // the output well below regulatory limits.
- 
+#define BASEBAND 1
+#ifdef BASEBAND
+uint8_t const baseband_Pin=7;
+#endif
 namespace BCD {
     typedef union {
         struct {
@@ -917,13 +920,13 @@ void modulate() {
         // start of second
         if (times_100ms != stop_modulation_after_times_100ms) {
             OCR2B = timer_2::pwm_modulated_carrier;
-            digitalWrite(7, HIGH);
+            digitalWrite(baseband_Pin,HIGH);
         }
     }
  
     if (times_100ms == stop_modulation_after_times_100ms) {
         OCR2B = timer_2::pwm_full_carrier;
-        digitalWrite(7, LOW);
+        digitalWrite(baseband_Pin,LOW);
     }
  
     if (times_100ms < 9) {
@@ -1104,7 +1107,7 @@ void setup() {
     timer_1::setup();
     timer_2::setup();
  
-    Serial.begin(115200);delay(5000);
+    Serial.begin(115200);while(!Serial);
  
     // compare to http://www.dcf77logs.de/ViewLog.aspx?mode=special&file=06%20-%20Schaltsekunde.log
     // set time to a leap second - because I always wanted to "see" one
@@ -1121,10 +1124,13 @@ void setup() {
     now.timezone_change_scheduled = 0;
     now.leap_second_scheduled = 1;
  
-    Serial.println("running");
-    Serial.println("output on pin D3");
-    pinMode(7, OUTPUT);
-    delay(5000);
+    Serial.println(F("running"));
+    Serial.println(F("output on pin D3"));
+#ifdef BASEBAND
+    pinMode(baseband_Pin,OUTPUT);
+    digitalWrite(baseband_Pin,LOW);
+    Serial.print(F("output on pin D"));Serial.println(baseband_Pin);
+#endif
 }
  
  
