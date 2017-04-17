@@ -75,7 +75,7 @@ namespace Phase_Drift_Analysis {
     volatile uint16_t phase = 0;
     volatile uint16_t noise = 0;
 }
-
+#ifdef BLINKENLIGHTS
 namespace LED_Display {
     // which led to use for monitor output
     const uint8_t dcf77_monitor_led = ::dcf77_monitor_led;
@@ -239,6 +239,7 @@ namespace LED_Display {
         }
     }
 }
+#endif
 
 namespace Scope {
     const uint16_t samples_per_second = 1000;
@@ -315,8 +316,9 @@ namespace Raw {
 }
 
 namespace Phase_Drift_Analysis {
+#ifdef BLINKENLIGHTS
     using namespace LED_Display;
-
+#endif
     volatile uint16_t counter = 1000;
     volatile uint16_t ref_counter = 0;
     volatile uint16_t noise_detector = 0;
@@ -455,8 +457,9 @@ uint8_t sample_input_pin() {
     // computations must be before display code
     Scope::process_one_sample(sampled_data);
     Phase_Drift_Analysis::process_one_sample(sampled_data);
-
+#ifdef BLINKENLIGHTS
     LED_Display::monitor(sampled_data);
+#endif    
 
 
     if (mode == 'r') {
@@ -471,7 +474,9 @@ uint8_t sample_input_pin() {
 
 void output_handler(const Clock::time_t &decoded_time) {
     Phase_Drift_Analysis::restart();
+#ifdef BLINKENLIGHTS    
     LED_Display::output_handler(decoded_time);
+#endif    
 }
 
 /*
@@ -512,7 +517,9 @@ namespace Parser {
         eeprom_write_byte((uint8_t *)(eeprom++), ID_u);
         eeprom_write_byte((uint8_t *)(eeprom++), ID_k);
         eeprom_write_byte((uint8_t *)(eeprom++), ::get_mode());
+#ifdef BLINKENLIGHTS        
         eeprom_write_byte((uint8_t *)(eeprom++), LED_Display::get_mode());
+#endif        
         Serial.println(F("modes persisted to eeprom"));
     }
 
@@ -521,7 +528,9 @@ namespace Parser {
         if (eeprom_read_byte((const uint8_t *)(eeprom++)) == ID_u &&
             eeprom_read_byte((const uint8_t *)(eeprom++)) == ID_k) {
             ::set_mode(eeprom_read_byte((const uint8_t *)(eeprom++)));
+#ifdef BLINKENLIGHTS            
             LED_Display::set_mode(eeprom_read_byte((const uint8_t *)(eeprom++)));
+#endif            
             Serial.println(F("modes restored from eeprom"));
         }
     }
@@ -595,6 +604,7 @@ namespace Parser {
                     return;
                 default:
                     switch (parser_mode) {
+#ifdef BLINKENLIGHTS                      
                         case led_display_command: {
                             switch (c) {
                                 case 'q':  // quiet
@@ -610,6 +620,7 @@ namespace Parser {
                                     return;
                             }
                         }
+#endif                        
                         case debug_output_command: {
                             switch(c) {
                                 case 'q':  // quiet
@@ -656,7 +667,9 @@ void setup() {
     digitalWrite(vcc_pin, HIGH);
 #endif
 
+#ifdef BLINKENLIGHTS
     LED_Display::setup();
+#endif
 
     DCF77_Clock::setup();
     DCF77_Clock::set_input_provider(sample_input_pin);
@@ -699,8 +712,9 @@ void setup() {
     #if defined(__AVR__)
     Serial.print(F("Analog Mode:     ")); Serial.println(dcf77_analog_samples);
     #endif
+#ifdef BLINKENLIGHTS    
     Serial.print(F("Monitor Led:     ")); Serial.println(LED_Display::dcf77_monitor_led);
-
+#endif
     Serial.println();
     #if defined(_AVR_EEPROM_H_)
     int8_t  adjust_steps;
