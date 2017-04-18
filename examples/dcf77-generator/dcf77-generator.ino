@@ -37,6 +37,7 @@ uint8_t const baseband_Pin=7;
 #endif
 #define EXT_SYNC 1
 #ifdef EXT_SYNC
+/* ext_sync_Pin has to be 2 as the isr depends on it. */
 uint8_t const ext_sync_Pin = 2;
 #endif
 namespace BCD {
@@ -925,13 +926,17 @@ void modulate() {
         // start of second
         if (times_100ms != stop_modulation_after_times_100ms) {
             OCR2B = timer_2::pwm_modulated_carrier;
+#ifdef BASEBAND
             digitalWrite(baseband_Pin,HIGH);
+#endif
         }
     }
  
     if (times_100ms == stop_modulation_after_times_100ms) {
         OCR2B = timer_2::pwm_full_carrier;
-        digitalWrite(7, LOW);
+#ifdef BASEBAND
+        digitalWrite(baseband_Pin, LOW);
+#endif
     }
  
     if (times_100ms < 9) {
