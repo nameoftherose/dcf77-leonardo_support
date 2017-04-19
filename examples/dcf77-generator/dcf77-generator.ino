@@ -1096,27 +1096,29 @@ namespace Parser {
             case 'x':
                 valid = parse_extended(new_time);
                 break;
+            case 'd':
+                Serial.println(F("current time setup (YY.MM.DD hh:mm:ss w sbtl)"));
+                show(now);
+                break;
         }
  
         if (valid) {
             cli();
             now = new_time;
             sei();
-        } else {
+        } else if (mode != 'd') {
             Serial.println();
             Serial.println();
             Serial.println(F("To set target time use one of the following formats"));
             Serial.println();
             Serial.println(F("simple mode:"));
-            Serial.println(F("sYY.MM.DD hh:mm.ss"));
+            Serial.println(F("sYY.MM.DD hh:mm:ss"));
             Serial.println();
             Serial.println(F("extended mode:"));
-            Serial.println(F("x:YY.MM.DD hh:mm.ss w sbtl"));
+            Serial.println(F("xYY.MM.DD hh:mm:ss w sbtl"));
             Serial.println();
-        }
-        Serial.println(F("current time setup (YY.MM.DD hh:mm.ss w sbtl)"));
-        Serial.println(F("w = weekday, s = summertime, b = backup antenna, t = timzone change scheduled, l = leap second scheduled"));
-        show(now);
+            Serial.println(F("w = weekday, s = summertime, b = backup antenna, t = timzone change scheduled, l = leap second scheduled"));
+        }      
     }
 }
  
