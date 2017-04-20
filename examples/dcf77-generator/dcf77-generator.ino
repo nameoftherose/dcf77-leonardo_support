@@ -35,7 +35,7 @@
 #ifdef BASEBAND
 uint8_t const baseband_Pin=7;
 #endif
-#define EXT_SYNC 1
+//define EXT_SYNC 1
 #ifdef EXT_SYNC
 /* ext_sync_Pin has to be 2 as the isr depends on it. */
 uint8_t const ext_sync_Pin = 2;
@@ -1097,7 +1097,7 @@ namespace Parser {
                 valid = parse_extended(new_time);
                 break;
             case 'd':
-                Serial.println(F("current time setup (YY.MM.DD hh:mm:ss w sbtl)"));
+                Serial.print(F("(YY.MM.DD hh:mm:ss w sbtl) "));
                 show(now);
                 break;
         }
@@ -1146,12 +1146,12 @@ void setup() {
     now.timezone_change_scheduled = 0;
     now.leap_second_scheduled = 1;
  
-    Serial.println(F("running"));
-    Serial.println(F("output on pin D3"));
+    Serial.println(F("dcf77-generator running"));
+    Serial.println(F("77.5kHz output on pin D3"));
 #ifdef BASEBAND
     pinMode(baseband_Pin,OUTPUT);
     digitalWrite(baseband_Pin,LOW);
-    Serial.print(F("output on pin D"));Serial.println(baseband_Pin);
+    Serial.print(F("Baseband output on pin D"));Serial.println(baseband_Pin);
 #endif
 #ifdef EXT_SYNC    
     pinMode(ext_sync_Pin, INPUT ); //Sync Input
