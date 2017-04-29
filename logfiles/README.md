@@ -1,11 +1,11 @@
 This directory contains log files from the leonardo dcf77 library.
 
--minicom.log:
+- minicom.log:
 >leonardo being fed by dcf77-generator running on UNO.
 
 The remaining logs were produced by leonardo connected to the Conrad module.
 
--dcf.zip: 
+- dcf.zip: 
 >The signal is dominated by noise produced by computers in the room and their power supplies. The signal is useless.
 
 When the leonardo is connected to the tablet running from batteries the signal is much cleaner.
