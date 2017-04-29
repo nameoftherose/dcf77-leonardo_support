@@ -13,3 +13,5 @@ When the leonardo is connected to a tablet running from batteries the signal is 
 During nighttime the signal is quite clear, but battery run out before synchronization was achieved. The log was lost. During the same night the Eurochron clock achieved synchronization.
 - dcf2017-04-29-07.zip:
 >2 hour log, clean signal, dirty state achieved, minutes and seconds were correct. 
+- dcf2017-04-29-11.zip
+> 3 hour log, relatively clean signal, remained in useless state, eeprom cleared. At a certain stage all fields apart from year were correct, but deteriorated.
