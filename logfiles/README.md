@@ -15,3 +15,5 @@ During nighttime the signal is quite clear, but battery run out before synchroni
 >2 hour log, clean signal, dirty state achieved, minutes and seconds were correct. 
 - dcf2017-04-29-11.zip
 > 3 hour log, relatively clean signal, remained in useless state, eeprom cleared. At a certain stage all fields apart from year were correct, but deteriorated.
+- dcf2017-04-29-14.zip
+> 5 hour log. sync achieved at around 22:00 o'clock with the tablet on battery. Around this time signal was very clean and the Eurochron clock syncronized too.
