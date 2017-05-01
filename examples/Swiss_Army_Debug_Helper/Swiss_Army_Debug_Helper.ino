@@ -672,9 +672,17 @@ void sprintlnpp16m(int16_t pp16m) {
 
 void setup() {
     //using namespace DCF77_Encoder;
-
-    Serial.begin(115200);while(!Serial);
-
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, HIGH);
+    Serial.begin(115200);
+//    uint8_t i=0;
+//    while(!Serial){
+//      if (i >12) break;
+//      delay(5000);
+//      i++;
+//    }
+    for(uint8_t i=0;i<12 && !Serial ; i++) delay(5000);
+    digitalWrite(LED_BUILTIN, LOW);    
     pinMode(dcf77_sample_pin, dcf77_pin_mode);
 
 #ifdef SYNCOUT    
@@ -766,7 +774,7 @@ void setup() {
 
 void loop() {
     Parser::parse();
-
+    digitalWrite(LED_BUILTIN,(DCF77_Clock::get_clock_state()==Clock::synced)?HIGH:LOW);
     switch (mode) {
         case 'q': break;
         case 'A':
