@@ -19,3 +19,5 @@ During nighttime the signal is quite clear, but battery run out before synchroni
 > 5 hour log. sync achieved at around 22:00 o'clock with the tablet on battery. Around this time signal was very clean and the Eurochron clock syncronized too.
 - dcfdcf2017-04-29-22.zip
 > Continuation of previous log. Tablet on powersupply from 29Z20:41:18 to 30Z05:11:06.
+- dcf_20170503T210938Z.zip
+> 9 hour log starting with reset. Night time no synchronization
