@@ -21,3 +21,5 @@ During nighttime the signal is quite clear, but battery run out before synchroni
 > Continuation of previous log. Tablet on powersupply from 29Z20:41:18 to 30Z05:11:06.
 - dcf_20170503T210938Z.zip
 > 9 hour log starting with reset. Night time no synchronization
+- dcf_20170504T060939Z.zip
+> 13 hour log, no synchronizatio, eurochron clock synchronized.
