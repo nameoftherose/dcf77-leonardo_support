@@ -22,4 +22,6 @@ During nighttime the signal is quite clear, but battery run out before synchroni
 - dcf_20170503T210938Z.zip
 > 9 hour log starting with reset. Night time no synchronization
 - dcf_20170504T060939Z.zip
-> 13 hour log, no synchronizatio, eurochron clock synchronized.
+> 15 hour log, no synchronizatio, eurochron clock synchronized.
+-  	dcf_20170504T210939Z.zip
+> 9 hour log, night time, dirty status for some minutes, eurochron synchronized for about 7 hours
