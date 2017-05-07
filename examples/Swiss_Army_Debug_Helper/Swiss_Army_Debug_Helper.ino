@@ -675,12 +675,7 @@ void setup() {
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, HIGH);
     Serial.begin(115200);
-//    uint8_t i=0;
-//    while(!Serial){
-//      if (i >12) break;
-//      delay(5000);
-//      i++;
-//    }
+
     for(uint8_t i=0;i<12 && !Serial ; i++) delay(5000);
     digitalWrite(LED_BUILTIN, LOW);    
     pinMode(dcf77_sample_pin, dcf77_pin_mode);
