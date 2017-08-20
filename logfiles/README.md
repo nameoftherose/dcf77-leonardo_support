@@ -27,3 +27,12 @@ During nighttime the signal is quite clear, but battery run out before synchroni
 > 9 hour log, night time, dirty status for some minutes, eurochron synchronized for about 7 hours
 - dcf_20170505T060939Z.zip
 > 24 hour log, dirty status for some minutes during night time, eurochron synchronized
+- dcf_20170819T183813.zip
+> 12 hour log synced for almost 2 hours then drowned in noise
+> 2017-08-19 20:38:13	Start of Log	
+> 2017-08-19 21:04:43	synced	    00:26
+> 2017-08-19 21:12:43	locked	    00:08
+> 2017-08-19 21:15:33	free	      00:02
+> 2017-08-19 21:54:43	synced	    00:39
+> 2017-08-19 23:50:15	lasy synced 01:55
+> then restatrt without synchronization due to power supply noise
