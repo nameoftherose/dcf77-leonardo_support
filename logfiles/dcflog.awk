@@ -1,3 +1,4 @@
+# process the swiss army debugger's log files (mode Dm)
 BEGIN{
 state="Clock state: useless"
 ts=""
