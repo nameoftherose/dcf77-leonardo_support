@@ -34,3 +34,9 @@ During nighttime the signal is quite clear, but battery run out before synchroni
 > 2017-08-19 21:54:43	synced	    00:39  
 > 2017-08-19 23:50:15	lasy synced 01:55  
 > then restatrt without synchronization due to power supply noise
+- dcf_20170820T195715Z.zip
+> 2017-08-20 21:57:15 CEST Start of Log  
+> 17-08-23 3 07:44:00 CEST End of Log  
+> Tablet alternatively on battery and power outlet  
+> Performance significantly better when on battery  
+
