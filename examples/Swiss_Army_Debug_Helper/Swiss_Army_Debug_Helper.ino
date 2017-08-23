@@ -825,6 +825,7 @@ void loop() {
                 case Clock::dirty:   Serial.println(F("dirty")); break;
                 case Clock::synced:  Serial.println(F("synced")); break;
                 case Clock::locked:  Serial.println(F("locked")); break;
+                case Clock::unlocked:  Serial.println(F("unlocked")); break;
             }
 
             Clock_Controller::Demodulator.debug_verbose();
