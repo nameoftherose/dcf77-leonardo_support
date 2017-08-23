@@ -852,6 +852,7 @@ void loop() {
                         case Clock::dirty:   Serial.print(F("dirty:  ")); break;
                         case Clock::synced:  Serial.print(F("synced: ")); break;
                         case Clock::locked:  Serial.print(F("locked: ")); break;
+                        case Clock::unlocked:  Serial.println(F("unlocked")); break;
                     }
                     Serial.print(' ');
 
