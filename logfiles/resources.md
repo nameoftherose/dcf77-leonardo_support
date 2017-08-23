@@ -3,3 +3,4 @@
  and [their antenna construction](http://eng.umb.edu/~eclipsemob/index.php/homepage/build/117-eclipsemob-antenna-instructions)  
 [Notes on Domestic VLF Reception](http://abelian.org/vlfrx/)  
 [Coil Inductance Calulation](http://coil32.net/)  
+[Transformer Design](https://en.wikibooks.org/wiki/Electronics/Transformer_Design) 
