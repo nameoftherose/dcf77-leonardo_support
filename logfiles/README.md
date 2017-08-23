@@ -38,7 +38,8 @@ During nighttime the signal is quite clear, but battery run out before synchroni
 > 2017-08-20 21:57:15 CEST Start of Log  
 > 2017-08-23 07:44:00 CEST End of Log  
 > Tablet alternatively on battery and power outlet  
-> Performance significantly better when on battery  
+> Performance significantly better when on battery 
+
 State   |Count  |  %   |
 --------|-------|------|
 useless	|   584	|  0.3%|
