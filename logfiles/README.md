@@ -39,12 +39,12 @@ During nighttime the signal is quite clear, but battery run out before synchroni
 > 2017-08-23 07:44:00 CEST End of Log  
 > Tablet alternatively on battery and power outlet  
 > Performance significantly better when on battery  
-State Count %
---------------
-useless	584	0.3%
-dirty	107	0.1%
-synced	49195	23.7%
-free	23576	11.3%
-locked	43153	20.7%
-unlocked	91392	43.9%
-total	208007	100.0%
+State   |Count  |  %
+--------|-------|------
+useless	|   584	|  0.3%
+dirty	  |   107	|  0.1%
+synced	| 49195	| 23.7%
+free	  | 23576	| 11.3%
+locked	| 43153	| 20.7%
+unlocked|	91392	| 43.9%
+total	  |208007	|100.0%
