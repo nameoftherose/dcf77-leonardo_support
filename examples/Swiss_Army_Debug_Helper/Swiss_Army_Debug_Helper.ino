@@ -581,6 +581,7 @@ namespace Parser {
         Serial.println(F("    r: raw output"));
         Serial.println(F("    c: CET/CEST"));
         Serial.println(F("    u: UTC"));
+        Serial.println(F("    w: Clock state counts"));
         #if defined(_AVR_EEPROM_H_)
         Serial.println(F("  *: persist current modes to EEPROM"));
         Serial.println(F("  ~: restore modes from EEPROM"));
@@ -595,7 +596,8 @@ namespace Parser {
     }
 
     // The parser will deliver output in two different ways
-    //     1) synchronous as a return value
+    //  ## 1) synchronous as a return value (actually the parser is void, it returns nothing)
+    //     1) sets the mode that controls the actions in loop()
     //     2) as a side effect to the LED display
     // We are lazy with the command mapping, that is the parser will
     // not map anything. The commands are fed directly from the parser
@@ -646,7 +648,7 @@ namespace Parser {
                                 case 'd':  // debug
                                 case 's':  // scope
                                 case 'm':  // multi mode debug + scope
-                                case 'S':  // hight resolution scope
+                                case 'S':  // high resolution scope
                                 case 'a':  // analyze phase drift
                                 case 'A':  // Analyze phase drift, more details
                                 case 'b':  // demodulator bins
@@ -654,6 +656,8 @@ namespace Parser {
                                 case 'r':  // raw
                                 case 'c':  // CET/CEST
                                 case 'u':  // UTC
+                                case 'g':  // EET/EEST
+                                case 'w':  // clockStateCounts
                                     ::set_mode(c);
                                     return;
                             }
@@ -766,10 +770,27 @@ void setup() {
     Parser::restore_from_EEPROM();
     #endif
 }
-
+uint32_t clockStateCounts[6];
+String clockStateTexts[6] = {"useless","dirty","free","unlocked","locked","synced"};
+Clock::time_t firstSyncTime;
+boolean syncAchieved = false;
+Clock::clock_state_t clockState;
+uint32_t scopeCount = 0;
 void loop() {
     Parser::parse();
-    digitalWrite(LED_BUILTIN,(DCF77_Clock::get_clock_state()==Clock::synced)?HIGH:LOW);
+    clockState=DCF77_Clock::get_clock_state();
+    
+    // Collect the clock state counts once a second
+    if (Scope::count > scopeCount){
+       clockStateCounts[clockState]++;
+       scopeCount=Scope::count;
+       if (clockState == Clock::synced && syncAchieved == false){
+          syncAchieved = true;
+          DCF77_Clock::get_current_time(firstSyncTime);
+       }
+    }
+    
+    digitalWrite(LED_BUILTIN,(clockState==Clock::synced)?HIGH:LOW);
     switch (mode) {
         case 'q': break;
         case 'A':
@@ -842,6 +863,7 @@ void loop() {
 
         case 'c': // render CET/CEST
         case 'u': // render UTC
+        case 'g': // render EET/EEST
             {
                 Clock::time_t now;
                 DCF77_Clock::get_current_time(now);
@@ -856,10 +878,10 @@ void loop() {
                     }
                     Serial.print(' ');
 
-                    const int8_t target_timezone_offset =
-                        mode == 'c' ?         0:
-                        now.uses_summertime? -2:
-                                             -1;
+                    int8_t target_timezone_offset;
+                    if (mode == 'c') target_timezone_offset = 0;
+                    if (mode == 'u') target_timezone_offset = now.uses_summertime? -2:-1;
+                    if (mode == 'g') target_timezone_offset = 1;
                     Timezone::adjust(now, target_timezone_offset);
 
                     Serial.print(F("20"));
@@ -883,13 +905,50 @@ void loop() {
                         } else {
                             Serial.println(F("CET (UTC+1)"));
                         }
+                    } else if (mode == 'g') {
+                        if (now.uses_summertime) {
+                            Serial.println(F("EEST (UTC+3)"));
+                        } else {
+                            Serial.println(F("EET (UTC+2)"));
+                        }
                     } else {
                         Serial.println(F("UTC"));
                     }
                 }
                 break;
             }
+        case 'w':
+            {
+                Clock::time_t now;
+                DCF77_Clock::get_current_time(now);
+                for (uint8_t w=0;w<6;w++){
+                  Serial.print(clockStateTexts[w]);Serial.print(" ");Serial.println(clockStateCounts[w]);    
+                }
+                if (syncAchieved == true) {
+                    Serial.print(F("Time of 1st Sync: "));
+                    Serial.print(F("20"));
+                    paddedPrint(firstSyncTime.year);
+                    Serial.print('-');
+                    paddedPrint(firstSyncTime.month);
+                    Serial.print('-');
+                    paddedPrint(firstSyncTime.day);
+                    Serial.print(' ');
 
+                    paddedPrint(firstSyncTime.hour);
+                    Serial.print(':');
+                    paddedPrint(firstSyncTime.minute);
+                    Serial.print(':');
+                    paddedPrint(firstSyncTime.second);
+
+                    Serial.print(' ');
+                    if (firstSyncTime.uses_summertime) {
+                        Serial.println(F("CEST (UTC+2)"));
+                    } else {
+                        Serial.println(F("CET (UTC+1)"));
+                    }
+                }  
+                break;
+            }
         case 'm':  // multi mode scope + fall through to debug
             Serial.println();
             Scope::print();
