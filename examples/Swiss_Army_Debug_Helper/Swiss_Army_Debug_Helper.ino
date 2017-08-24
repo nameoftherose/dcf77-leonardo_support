@@ -581,6 +581,7 @@ namespace Parser {
         Serial.println(F("    r: raw output"));
         Serial.println(F("    c: CET/CEST"));
         Serial.println(F("    u: UTC"));
+        Serial.println(F("    g: EET/EEST"));
         Serial.println(F("    w: Clock state counts"));
         #if defined(_AVR_EEPROM_H_)
         Serial.println(F("  *: persist current modes to EEPROM"));
