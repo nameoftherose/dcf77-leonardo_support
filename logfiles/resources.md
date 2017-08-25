@@ -1,6 +1,7 @@
 [various antenna calculators](http://zerobeat.net/G4FGQ/page3.html)   
 [Eclipsemob: a 60kHz receiver design for WWVB](http://eng.umb.edu/~eclipsemob/index.php/homepage/build/126-receiver-instructions-2)
  and [their antenna construction](http://eng.umb.edu/~eclipsemob/index.php/homepage/build/117-eclipsemob-antenna-instructions)  
+ [DCF7 Antenna Design](http://www.c-max-time.com/tech/antenna.php)  
 [Notes on Domestic VLF Reception](http://abelian.org/vlfrx/)  
 [Coil Inductance Calulation](http://coil32.net/)  
 [Transformer Design](https://en.wikibooks.org/wiki/Electronics/Transformer_Design) 
