@@ -847,7 +847,7 @@ void loop() {
                 case Clock::dirty:   Serial.println(F("dirty")); break;
                 case Clock::synced:  Serial.println(F("synced")); break;
                 case Clock::locked:  Serial.println(F("locked")); break;
-                case Clock::unlocked:  Serial.print(F("unlocked")); break;
+                case Clock::unlocked:  Serial.println(F("unlocked")); break;
             }
 
             Clock_Controller::Demodulator.debug_verbose();
@@ -875,7 +875,7 @@ void loop() {
                         case Clock::dirty:   Serial.print(F("dirty:  ")); break;
                         case Clock::synced:  Serial.print(F("synced: ")); break;
                         case Clock::locked:  Serial.print(F("locked: ")); break;
-                        case Clock::unlocked:  Serial.println(F("unlocked")); break;
+                        case Clock::unlocked:  Serial.print(F("unlocked")); break;
                     }
                     Serial.print(' ');
 
@@ -923,8 +923,9 @@ void loop() {
                 Clock::time_t now;
                 DCF77_Clock::get_current_time(now);
                 for (uint8_t w=0;w<6;w++){
-                  Serial.print(clockStateTexts[w]);Serial.print(" ");Serial.println(clockStateCounts[w]);    
+                  Serial.print(clockStateTexts[w]);Serial.print(":");Serial.print(clockStateCounts[w]);Serial.print("");   
                 }
+                Serial.println("");
                 if (syncAchieved == true) {
                     Serial.print(F("Time of 1st Sync: "));
                     Serial.print(F("20"));
