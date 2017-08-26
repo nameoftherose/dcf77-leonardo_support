@@ -871,11 +871,11 @@ void loop() {
 
                 if (now.month.val > 0) {
                     switch (DCF77_Clock::get_clock_state()) {
-                        case Clock::useless: Serial.print(F("useless:")); break;
-                        case Clock::dirty:   Serial.print(F("dirty:  ")); break;
-                        case Clock::synced:  Serial.print(F("synced: ")); break;
-                        case Clock::locked:  Serial.print(F("locked: ")); break;
-                        case Clock::unlocked:  Serial.print(F("unlocked")); break;
+                        case Clock::useless:   Serial.print(F("useless:  ")); break;
+                        case Clock::dirty:     Serial.print(F("dirty:    ")); break;
+                        case Clock::synced:    Serial.print(F("synced:   ")); break;
+                        case Clock::locked:    Serial.print(F("locked:   ")); break;
+                        case Clock::unlocked:  Serial.print(F("unlocked: ")); break;
                     }
                     Serial.print(' ');
 
