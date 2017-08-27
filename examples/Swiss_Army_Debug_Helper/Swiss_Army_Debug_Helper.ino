@@ -772,11 +772,15 @@ void setup() {
     #endif
 }
 uint32_t clockStateCounts[6];
-String clockStateTexts[6] = {"useless","dirty","free","unlocked","locked","synced"};
+const String PROGMEM clockStateTexts[6] = {"useless","dirty","free","unlocked","locked","synced"};
 Clock::time_t firstSyncTime;
+Clock::time_t lastSyncTime;
 boolean syncAchieved = false;
-Clock::clock_state_t clockState;
+Clock::clock_state_t clockState,previousClockState=Clock::useless;
 uint32_t scopeCount = 0;
+const uint8_t local_timezone_offset = 1;
+const String PROGMEM local_timezone_txt     = "EET  (UTC+2)";
+const String PROGMEM local_timezone_txt_dst = "EEST (UTC+3)";
 void loop() {
     Parser::parse();
     clockState=DCF77_Clock::get_clock_state();
@@ -785,9 +789,12 @@ void loop() {
     if (Scope::count > scopeCount){
        clockStateCounts[clockState]++;
        scopeCount=Scope::count;
-       if (clockState == Clock::synced && syncAchieved == false){
-          syncAchieved = true;
-          DCF77_Clock::get_current_time(firstSyncTime);
+       if (clockState == Clock::synced && previousClockState != Clock::synced){
+          DCF77_Clock::get_current_time(lastSyncTime);
+          if (syncAchieved == false){
+             syncAchieved = true;
+             firstSyncTime=lastSyncTime;
+          }
        }
     }
     
@@ -871,18 +878,18 @@ void loop() {
 
                 if (now.month.val > 0) {
                     switch (DCF77_Clock::get_clock_state()) {
-                        case Clock::useless:   Serial.print(F("useless:  ")); break;
-                        case Clock::dirty:     Serial.print(F("dirty:    ")); break;
-                        case Clock::synced:    Serial.print(F("synced:   ")); break;
-                        case Clock::locked:    Serial.print(F("locked:   ")); break;
-                        case Clock::unlocked:  Serial.print(F("unlocked: ")); break;
+                        case Clock::useless:   Serial.print(F("useless: ")); break;
+                        case Clock::dirty:     Serial.print(F("dirty:   ")); break;
+                        case Clock::synced:    Serial.print(F("synced:  ")); break;
+                        case Clock::locked:    Serial.print(F("locked:  ")); break;
+                        case Clock::unlocked:  Serial.print(F("unlocked:")); break;
                     }
                     Serial.print(' ');
 
-                    int8_t target_timezone_offset;
+                    int8_t target_timezone_offset;                  
                     if (mode == 'c') target_timezone_offset = 0;
                     if (mode == 'u') target_timezone_offset = now.uses_summertime? -2:-1;
-                    if (mode == 'g') target_timezone_offset = 1;
+                    if (mode == 'g') target_timezone_offset = local_timezone_offset;
                     Timezone::adjust(now, target_timezone_offset);
 
                     Serial.print(F("20"));
@@ -908,9 +915,9 @@ void loop() {
                         }
                     } else if (mode == 'g') {
                         if (now.uses_summertime) {
-                            Serial.println(F("EEST (UTC+3)"));
+                            Serial.println(local_timezone_txt);
                         } else {
-                            Serial.println(F("EET (UTC+2)"));
+                            Serial.println(local_timezone_txt_dst);
                         }
                     } else {
                         Serial.println(F("UTC"));
@@ -923,31 +930,15 @@ void loop() {
                 Clock::time_t now;
                 DCF77_Clock::get_current_time(now);
                 for (uint8_t w=0;w<6;w++){
-                  Serial.print(clockStateTexts[w]);Serial.print(":");Serial.print(clockStateCounts[w]);Serial.print("");   
+                  Serial.print(" "+clockStateTexts[w]+": "+clockStateCounts[w]);    
                 }
-                Serial.println("");
+                Serial.println("\n");
                 if (syncAchieved == true) {
                     Serial.print(F("Time of 1st Sync: "));
-                    Serial.print(F("20"));
-                    paddedPrint(firstSyncTime.year);
-                    Serial.print('-');
-                    paddedPrint(firstSyncTime.month);
-                    Serial.print('-');
-                    paddedPrint(firstSyncTime.day);
-                    Serial.print(' ');
-
-                    paddedPrint(firstSyncTime.hour);
-                    Serial.print(':');
-                    paddedPrint(firstSyncTime.minute);
-                    Serial.print(':');
-                    paddedPrint(firstSyncTime.second);
-
-                    Serial.print(' ');
-                    if (firstSyncTime.uses_summertime) {
-                        Serial.println(F("CEST (UTC+2)"));
-                    } else {
-                        Serial.println(F("CET (UTC+1)"));
-                    }
+                    DCF77_Clock::print(firstSyncTime);
+                    Serial.print(F(" Time of last Sync: "));
+                    DCF77_Clock::print(lastSyncTime);
+                    Serial.println("");
                 }  
                 break;
             }
