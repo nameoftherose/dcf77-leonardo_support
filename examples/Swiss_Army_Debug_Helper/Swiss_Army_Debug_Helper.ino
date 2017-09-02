@@ -41,7 +41,7 @@ const uint8_t dcf77_inverted_samples = 0;
 // The Blinkenlighty requires 1 this because the input
 // pins are loaded with LEDs. All others should prefer
 // setting this to 0 as this reduces interrupt contention.
-const uint8_t dcf77_analog_samples = 1;
+const uint8_t dcf77_analog_samples = 0;
 
 const uint8_t dcf77_monitor_led = 18;
 
@@ -51,24 +51,6 @@ uint8_t ledpin(const uint8_t led) {
 
 #else
 // different pin settings for ARM based arduino
-const uint8_t dcf77_sample_pin = 53;
-const uint8_t dcf77_inverted_samples = 0;
-
-// const uint8_t dcf77_pin_mode = INPUT;  // disable internal pull up
-const uint8_t dcf77_pin_mode = INPUT_PULLUP;  // enable internal pull up
-
-const uint8_t pon_pin  = 51; // connect pon to ground !!!
-const uint8_t data_pin = 53;
-const uint8_t gnd_pin  = 51;
-const uint8_t vcc_pin  = 49;
-
-const uint8_t dcf77_monitor_led = 19;
-
-uint8_t ledpin(const uint8_t led) {
-    return led<14? led: led+(54-14);
-}
-
-#define POLLIN_DCF77 1
 #endif
 
 
@@ -81,169 +63,6 @@ namespace Phase_Drift_Analysis {
     volatile uint16_t noise = 0;
 }
 #ifdef BLINKENLIGHTS
-namespace LED_Display {
-    // which led to use for monitor output
-    const uint8_t dcf77_monitor_led = ::dcf77_monitor_led;
-
-    // which leds to use for monitoring lightshow
-    const uint8_t lower_output_led =  2;
-    const uint8_t upper_output_led = 17;
-
-    int8_t counter = 0;
-    uint8_t rolling_led = lower_output_led;
-
-
-    void reset_output_leds() {
-        for (uint8_t led = lower_output_led; led <= upper_output_led; ++led) {
-            digitalWrite(ledpin(led), LOW);
-        }
-    }
-
-    void setup_output_leds() {
-        for (uint8_t led = lower_output_led; led <= upper_output_led; ++led) {
-            pinMode(ledpin(led), OUTPUT);
-            digitalWrite(ledpin(led), LOW);
-        }
-    }
-
-    void setup() {
-        pinMode(ledpin(dcf77_monitor_led), OUTPUT);
-        setup_output_leds();
-    }
-
-
-    volatile char mode = 't';
-    void set_mode(const char c) {
-        Serial.print(F("set LED mode: ")); Serial.println(c);
-        if (c != mode) {
-            // mode assignment must be before reset in order
-            // to avoid race conditions
-            mode = c;
-            reset_output_leds();
-        }
-    }
-    char get_mode() { return mode; }
-
-    void monitor(const uint8_t sampled_data) {
-        digitalWrite(ledpin(dcf77_monitor_led), sampled_data);
-
-        switch (mode) {
-            case '2':    // 200 ms
-            case 't':  { // ticks
-                const uint8_t ticks_per_cycle_nominator   = 25;
-                const uint8_t ticks_per_cycle_denominator = 2;
-
-                if (rolling_led <= upper_output_led) {
-                    digitalWrite(ledpin(rolling_led), sampled_data);
-                }
-
-                counter += ticks_per_cycle_denominator;
-                if (counter >= ticks_per_cycle_nominator) {
-                    rolling_led = (rolling_led < upper_output_led ||
-                                  (mode == '2' && rolling_led <= (1000 * ticks_per_cycle_denominator)/ ticks_per_cycle_nominator))
-                                       ? rolling_led + 1: lower_output_led;
-                    counter -= ticks_per_cycle_nominator;
-
-                    if (mode=='2' && rolling_led <= upper_output_led) {
-                        digitalWrite(ledpin(rolling_led), !sampled_data);
-                    }
-                }
-            }
-            break;
-
-            case 'f':  { // flash
-                for (uint8_t led = lower_output_led; led <= upper_output_led; ++led) {
-                    digitalWrite(ledpin(led), sampled_data);
-                }
-            }
-            break;
-        }
-    }
-
-    void output_handler(const Clock::time_t &decoded_time) {
-        switch (mode) {
-            case '2':
-            case 't':  // ticks
-                rolling_led = lower_output_led;
-                counter = 0;
-                break;
-
-            case 's':  { // seconds
-                uint8_t out = decoded_time.second.val;
-                uint8_t led = lower_output_led + 3;
-                for (uint8_t bit=0; bit<8; ++bit) {
-                    digitalWrite(ledpin(led++), out & 0x1);
-                    out >>= 1;
-
-                    if (bit==3) {
-                        ++led;
-                    }
-                }
-                break;
-            }
-            case 'h': { // hours and minutes
-                uint8_t led = lower_output_led;
-
-                uint8_t out = decoded_time.minute.val;
-                for (uint8_t bit=0; bit<7; ++bit) {
-                    digitalWrite(ledpin(led++), out & 0x1);
-                    out >>= 1;
-                }
-                ++led;
-
-                out = decoded_time.hour.val;
-                for (uint8_t bit=0; bit<6; ++bit) {
-                    digitalWrite(ledpin(led++), out & 0x1);
-                    out >>= 1;
-                }
-                break;
-            }
-            case 'm': { // months and days
-                uint8_t led = lower_output_led;
-
-                uint8_t out = decoded_time.day.val;
-                for (uint8_t bit=0; bit<6; ++bit) {
-                    digitalWrite(ledpin(led++), out & 0x1);
-                    out >>= 1;
-                }
-                ++led;
-
-                out = decoded_time.month.val;
-                for (uint8_t bit=0; bit<5; ++bit) {
-                    digitalWrite(ledpin(led++), out & 0x1);
-                    out >>= 1;
-                }
-                break;
-            }
-
-            case 'a': { // analyze phase drift
-                for (uint8_t bit=0; bit<10; ++bit) {
-                    const uint8_t pm10 = Phase_Drift_Analysis::phase % 10;
-                    digitalWrite(ledpin(lower_output_led+bit), pm10==bit);
-                }
-                break;
-            }
-
-            case 'c': { // calibration state + deviation
-                const DCF77_Frequency_Control::calibration_state_t calibration_state = DCF77_Frequency_Control::get_calibration_state();
-                int16_t deviation = abs(DCF77_Frequency_Control::get_current_deviation());
-                uint8_t led = lower_output_led;
-
-                // display calibration state, blink if running unqualified
-                digitalWrite(ledpin(led++), calibration_state.qualified);
-                digitalWrite(ledpin(led++), calibration_state.running && !calibration_state.qualified && (decoded_time.second.val & 1));
-                digitalWrite(ledpin(led++), calibration_state.running);
-
-                // render the absolute deviation in binary
-                while (led < upper_output_led) {
-                    digitalWrite(ledpin(led), deviation & 1);
-                    deviation >>= 1;
-                    ++led;
-                }
-            }
-        }
-    }
-}
 #endif
 
 namespace Scope {
@@ -322,7 +141,6 @@ namespace Raw {
 
 namespace Phase_Drift_Analysis {
 #ifdef BLINKENLIGHTS
-    using namespace LED_Display;
 #endif
     volatile uint16_t counter = 1000;
     volatile uint16_t ref_counter = 0;
@@ -477,7 +295,6 @@ uint8_t sample_input_pin() {
     Scope::process_one_sample(sampled_data);
     Phase_Drift_Analysis::process_one_sample(sampled_data);
 #ifdef BLINKENLIGHTS
-    LED_Display::monitor(sampled_data);
 #endif    
 
 
@@ -494,36 +311,9 @@ uint8_t sample_input_pin() {
 void output_handler(const Clock::time_t &decoded_time) {
     Phase_Drift_Analysis::restart();
 #ifdef BLINKENLIGHTS    
-    LED_Display::output_handler(decoded_time);
 #endif    
 }
 
-/*
-void free_dump() {
-
-    uint8_t *heapptr;
-    uint8_t *stackptr;
-
-    stackptr = (uint8_t *)malloc(4);   // use stackptr temporarily
-    heapptr = stackptr;                // save value of heap pointer
-    free(stackptr);                    // free up the memory again (sets stackptr to 0)
-    stackptr =  (uint8_t *)(SP);       // save value of stack pointer
-
-
-    // print("HP: ");
-    Serial.print(F("HP: "));
-    Serial.println((int) heapptr, HEX);
-
-    // print("SP: ");
-    Serial.print(F("SP: "));
-    Serial.println((int) stackptr, HEX);
-
-    // print("Free: ");
-    Serial.print(F("Free: "));
-    Serial.println((int) stackptr - (int) heapptr, HEX);
-    Serial.println();
-}
-*/
 
 namespace Parser {
     #if defined(_AVR_EEPROM_H_)
@@ -537,7 +327,6 @@ namespace Parser {
         eeprom_write_byte((uint8_t *)(eeprom++), ID_k);
         eeprom_write_byte((uint8_t *)(eeprom++), ::get_mode());
 #ifdef BLINKENLIGHTS        
-        eeprom_write_byte((uint8_t *)(eeprom++), LED_Display::get_mode());
 #endif        
         Serial.println(F("modes persisted to eeprom"));
     }
@@ -548,7 +337,6 @@ namespace Parser {
             eeprom_read_byte((const uint8_t *)(eeprom++)) == ID_k) {
             ::set_mode(eeprom_read_byte((const uint8_t *)(eeprom++)));
 #ifdef BLINKENLIGHTS            
-            LED_Display::set_mode(eeprom_read_byte((const uint8_t *)(eeprom++)));
 #endif            
             Serial.println(F("modes restored from eeprom"));
         }
@@ -558,16 +346,16 @@ namespace Parser {
     void help() {
         Serial.println();
         Serial.println(F("use serial interface to alter settings"));
-        Serial.println(F("  L: led output modes"));
-        Serial.println(F("    q: quiet"));
-        Serial.println(F("    f: flash"));
-        Serial.println(F("    t: ticks"));
-        Serial.println(F("    2: 200 ms of the signal"));
-        Serial.println(F("    s: BCD seconds"));
-        Serial.println(F("    h: BCD hours and minutes"));
-        Serial.println(F("    m: BCD months and days"));
-        Serial.println(F("    a: analyze phase drift"));
-        Serial.println(F("    c: calibration state + deviation"));
+//        Serial.println(F("  L: led output modes"));
+//        Serial.println(F("    q: quiet"));
+//        Serial.println(F("    f: flash"));
+//        Serial.println(F("    t: ticks"));
+//        Serial.println(F("    2: 200 ms of the signal"));
+//        Serial.println(F("    s: BCD seconds"));
+//        Serial.println(F("    h: BCD hours and minutes"));
+//        Serial.println(F("    m: BCD months and days"));
+//        Serial.println(F("    a: analyze phase drift"));
+//        Serial.println(F("    c: calibration state + deviation"));
         Serial.println(F("  D: debug modes"));
         Serial.println(F("    q: quiet"));
         Serial.println(F("    d: debug quality factors"));
@@ -583,6 +371,8 @@ namespace Parser {
         Serial.println(F("    u: UTC"));
         Serial.println(F("    g: EET/EEST"));
         Serial.println(F("    w: Clock state counts"));
+//        Serial.println(F("    t: toggle sample mode"));
+//        Serial.println(F("    C: cycle quality_factor_sync_threshold"));
         #if defined(_AVR_EEPROM_H_)
         Serial.println(F("  *: persist current modes to EEPROM"));
         Serial.println(F("  ~: restore modes from EEPROM"));
@@ -627,21 +417,6 @@ namespace Parser {
                 default:
                     switch (parser_mode) {
 #ifdef BLINKENLIGHTS                      
-                        case led_display_command: {
-                            switch (c) {
-                                case 'q':  // quiet
-                                case 'f':  // flash
-                                case 't':  // ticks
-                                case '2':  // 200 ms of the signal
-                                case 's':  // seconds
-                                case 'h':  // hours and minutes
-                                case 'm':  // months and days
-                                case 'a':  // analyze phase drift
-                                case 'c':  // calibration state + deviation
-                                    LED_Display::set_mode(c);
-                                    return;
-                            }
-                        }
 #endif                        
                         case debug_output_command: {
                             switch(c) {
@@ -659,6 +434,8 @@ namespace Parser {
                                 case 'u':  // UTC
                                 case 'g':  // EET/EEST
                                 case 'w':  // clockStateCounts
+//                                case 't':  // sample mode
+//                                case 'C':  // quality_factor_sync_threshold
                                     ::set_mode(c);
                                     return;
                             }
@@ -690,16 +467,9 @@ void setup() {
 #endif
 
 #if defined(POLLIN_DCF77)
-    pinMode(gnd_pin, OUTPUT);
-    digitalWrite(gnd_pin, LOW);
-    pinMode(pon_pin, OUTPUT);
-    digitalWrite(pon_pin, LOW);
-    pinMode(vcc_pin, OUTPUT);
-    digitalWrite(vcc_pin, HIGH);
 #endif
 
 #ifdef BLINKENLIGHTS
-    LED_Display::setup();
 #endif
 
     DCF77_Clock::setup();
@@ -744,7 +514,6 @@ void setup() {
     Serial.print(F("Analog Mode:     ")); Serial.println(dcf77_analog_samples);
     #endif
 #ifdef BLINKENLIGHTS    
-    Serial.print(F("Monitor Led:     ")); Serial.println(LED_Display::dcf77_monitor_led);
 #endif
     Serial.println();
     #if defined(_AVR_EEPROM_H_)
@@ -889,7 +658,7 @@ void loop() {
                     int8_t target_timezone_offset;                  
                     if (mode == 'c') target_timezone_offset = 0;
                     if (mode == 'u') target_timezone_offset = now.uses_summertime? -2:-1;
-                    if (mode == 'g') target_timezone_offset = local_timezone_offset;
+                    if (mode == 'g') target_timezone_offset = local_timezone_offset+(now.uses_summertime? 1:0);
                     Timezone::adjust(now, target_timezone_offset);
 
                     Serial.print(F("20"));
@@ -942,6 +711,22 @@ void loop() {
                 }  
                 break;
             }
+//        case 't':
+//            {
+//                Serial.print(F("Sample mode changed from "));Serial.print(dcf77_analog_samples);
+////                dcf77_analog_samples = (dcf77_analog_samples == 0)?1:0;
+//                Serial.print(F(" to "));Serial.println(dcf77_analog_samples);
+//                break;
+//            }
+//         case 'C':
+//            {
+//                Serial.print(F("Quality_sync threshold changed from "));
+//                Serial.print((int)Configuration::quality_factor_sync_threshold);
+//            //    if (Configuration::quality_factor_sync_threshold == 1) Configuration::quality_factor_sync_threshold = 2;
+//                Serial.print(F(" to "));
+//                Serial.println((int)Configuration::quality_factor_sync_threshold);
+//                break;
+//            }
         case 'm':  // multi mode scope + fall through to debug
             Serial.println();
             Scope::print();
@@ -964,5 +749,6 @@ void loop() {
             Clock_Controller::Local_Clock.debug();
         }
     }
+//    if (mode == 't' || mode == 'C') set_mode('m');
     //free_dump();
 }
