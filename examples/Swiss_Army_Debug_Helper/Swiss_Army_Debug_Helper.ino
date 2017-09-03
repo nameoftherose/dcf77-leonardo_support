@@ -739,14 +739,16 @@ void loop() {
                 Serial.println();
                 Serial.print(F("Decoded time: "));
 
-                DCF77_Clock::print(now);
+                DCF77_Clock::print(now);//dcf77.cpp L1470
                 Serial.println();
             }
 
-            DCF77_Clock::debug();
+            // This seems to print the current time estimation and the  quality triples (x-y:z) dcf.h L 2134
+            // for the time it seems to call DCF77_Encoder::debug() dcf.cpp L 1220
+            DCF77_Clock::debug(); 
 
             //Clock_Controller::Second_Decoder.debug();
-            Clock_Controller::Local_Clock.debug();
+            Clock_Controller::Local_Clock.debug(); //This seems to print the clock state and the tick .h L1509
         }
     }
 //    if (mode == 't' || mode == 'C') set_mode('m');
