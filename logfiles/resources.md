@@ -4,6 +4,6 @@
 [DCF7 Antenna Design](http://www.c-max-time.com/tech/antenna.php)  
 [Notes on Domestic VLF Reception](http://abelian.org/vlfrx/)  
 [Coil Inductance Calulation](http://coil32.net/)  
-[Transformer Design](https://en.wikibooks.org/wiki/Electronics/Transformer_Design) 
+[Transformer Design](https://en.wikibooks.org/wiki/Electronics/Transformer_Design)  
 [Various Papers on Antennas and Coils](http://g3rbj.co.uk/)  
 [Filtering the 5V USB power supply line](http://andybrown.me.uk/2015/07/24/usb-filtering/)
