@@ -559,7 +559,7 @@ void loop() {
        clockStateCounts[clockState]++;
        scopeCount=Scope::count;
        if (clockState == Clock::synced && previousClockState != Clock::synced){
-          DCF77_Clock::get_current_time(lastSyncTime);
+          DCF77_Clock::read_current_time(lastSyncTime);
           if (syncAchieved == false){
              syncAchieved = true;
              firstSyncTime=lastSyncTime;
