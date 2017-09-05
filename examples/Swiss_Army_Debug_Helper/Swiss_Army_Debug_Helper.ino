@@ -658,7 +658,7 @@ void loop() {
                     int8_t target_timezone_offset;                  
                     if (mode == 'c') target_timezone_offset = 0;
                     if (mode == 'u') target_timezone_offset = now.uses_summertime? -2:-1;
-                    if (mode == 'g') target_timezone_offset = local_timezone_offset+(now.uses_summertime? 1:0);
+                    if (mode == 'g') target_timezone_offset = local_timezone_offset;
                     Timezone::adjust(now, target_timezone_offset);
 
                     Serial.print(F("20"));
@@ -684,9 +684,9 @@ void loop() {
                         }
                     } else if (mode == 'g') {
                         if (now.uses_summertime) {
-                            Serial.println(local_timezone_txt);
-                        } else {
                             Serial.println(local_timezone_txt_dst);
+                        } else {
+                            Serial.println(local_timezone_txt);
                         }
                     } else {
                         Serial.println(F("UTC"));
