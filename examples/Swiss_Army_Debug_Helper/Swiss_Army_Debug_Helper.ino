@@ -543,7 +543,8 @@ void setup() {
 uint32_t clockStateCounts[6];
 const String PROGMEM clockStateTexts[6] = {"useless","dirty","free","unlocked","locked","synced"};
 Clock::time_t firstSyncTime;
-Clock::time_t lastSyncTime;
+Clock::time_t lastToSyncTime;
+Clock::time_t lastFromSyncTime;
 boolean syncAchieved = false;
 Clock::clock_state_t clockState,previousClockState=Clock::useless;
 uint32_t scopeCount = 0;
@@ -559,12 +560,16 @@ void loop() {
        clockStateCounts[clockState]++;
        scopeCount=Scope::count;
        if (clockState == Clock::synced && previousClockState != Clock::synced){
-          DCF77_Clock::read_current_time(lastSyncTime);
+          DCF77_Clock::read_current_time(lastToSyncTime);
           if (syncAchieved == false){
              syncAchieved = true;
-             firstSyncTime=lastSyncTime;
+             firstSyncTime=lastFromSyncTime=lastToSyncTime;
           }
        }
+       else if (clockState != Clock::synced && previousClockState == Clock::synced){
+          DCF77_Clock::read_current_time(lastFromSyncTime);
+       }
+       previousClockState = clockState;
     }
     
     digitalWrite(LED_BUILTIN,(clockState==Clock::synced)?HIGH:LOW);
@@ -705,8 +710,10 @@ void loop() {
                 if (syncAchieved == true) {
                     Serial.print(F("Time of 1st Sync: "));
                     DCF77_Clock::print(firstSyncTime);
-                    Serial.print(F(" Time of last Sync: "));
-                    DCF77_Clock::print(lastSyncTime);
+                    Serial.print(F(" Time of last transition to Sync: "));
+                    DCF77_Clock::print(lastToSyncTime);
+                    Serial.print(F(" Time of last transition from Sync: "));
+                    DCF77_Clock::print(lastFromSyncTime);
                     Serial.println("");
                 }  
                 break;
