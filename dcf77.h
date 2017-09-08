@@ -100,7 +100,7 @@ struct Configuration {
                                                                                        : centi_seconds;
 
     enum quality_factor_sync_threshold_t : uint8_t { aggressive = 1, standard = 2, conservative = 3 };
-    static const uint8_t quality_factor_sync_threshold = aggressive;
+    static const uint8_t quality_factor_sync_threshold = conservative;
 
 
     // Set to true if the library is deployed in a device runnning at room temperature.
