@@ -49,3 +49,7 @@ free	  | 23576	| 11.3%|
 locked	| 43153	| 20.7%|
 unlocked|	91392	| 43.9%|
 total	  |208007	|100.0%|
+
+- dcf_2017-09-07_2158.zip
+![phase lock accuracy](https://github.com/nameoftherose/dcf77-leonardo_support/blob/master/logfiles/phaselock.png)  
+![prediction match accuracy](https://github.com/nameoftherose/dcf77-leonardo_support/blob/master/logfiles/predictionmatch.png)
