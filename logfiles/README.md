@@ -51,5 +51,15 @@ unlocked|	91392	| 43.9%|
 total	  |208007	|100.0%|
 
 - dcf_2017-09-07_2158.zip
+State   |Count   |Duration |  %   |
+--------|--------|---------|------|
+useless	|    466 |  0:07:46|  0.1%|
+dirty	  |    896 |  0:14:56|  0.1%|
+synced	|267,727 | 74:22:07| 41.8%|
+free	  | 33,677 |  9:21:17|  5.3%|
+locked	| 49,614 | 13:46:54|  7.7%|
+unlocked|288,105 | 80:01:45| 45.0%|
+total	  |640,485 |177:54:45|100.0%|
+
 ![phase lock accuracy](https://github.com/nameoftherose/dcf77-leonardo_support/blob/master/logfiles/phaselock.png)  
 ![prediction match accuracy](https://github.com/nameoftherose/dcf77-leonardo_support/blob/master/logfiles/predictionmatch.png)
