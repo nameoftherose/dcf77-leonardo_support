@@ -41,8 +41,8 @@ namespace Internal
         namespace Debug
         namespace DCF77_Naive_Bitstream_Decoder
         struct DCF77_No_Frequency_Control {}
-        struct DCF77_Clock_Controller {}
+        struct DCF77_Clock_Controller {
                typedef struct {} clock_quality_t;
                typedef struct {} clock_quality_factor_t;
-        
+        }
         namespace Generic_1_kHz_Generator
