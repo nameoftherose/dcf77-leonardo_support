@@ -1,0 +1,48 @@
+struct Configuration 
+
+namespace BCD :dcf77.h dcf77.cpp
+typedef union {struct {} digit;
+        struct {} bit;
+        uint8_t val;
+    } bcd_t
+
+namespace Clock :dcf77.h 
+    typedef struct { } time_t
+    typedef enum {} clock_state_t
+
+namespace DCF77_Clock :dcf77.h dcf77.cpp
+namespace Internal 
+    namespace Debug 
+    namespace DCF77
+        typedef struct {} serialized_clock_stream  
+    namespace TMP
+    namespace Arithmetic_Tools
+    struct DCF77_Encoder {
+    namespace Binning
+        struct lock_quality_tt {}
+        struct bins_t {}
+        struct Decoder {}
+        struct Convoluter {}
+        struct Binner {struct bins_t {}}
+        struct DCF77_Demodulator { struct stage_with_averages {}
+                                   struct dummy_stage {}
+                                 }
+        struct DCF77_Flag_Decoder {}
+        struct DCF77_Month_Decoder {}
+        struct DCF77_Weekday_Decoder {}
+        struct DCF77_Hour_Decoder {}
+        struct DCF77_Minute_Decoder {}
+        struct DCF77_Second_Decoder {}
+        struct DCF77_Local_Clock {}
+        struct DCF77_Frequency_Control {
+               struct generic_deviation_tracker_t {}
+        }
+        typedef struct {} calibration_state_t;
+        namespace Debug
+        namespace DCF77_Naive_Bitstream_Decoder
+        struct DCF77_No_Frequency_Control {}
+        struct DCF77_Clock_Controller {}
+               typedef struct {} clock_quality_t;
+               typedef struct {} clock_quality_factor_t;
+        
+        namespace Generic_1_kHz_Generator
