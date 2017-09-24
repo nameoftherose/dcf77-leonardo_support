@@ -18,6 +18,6 @@ Even so problems remain:
 - When the Clock starts at the beginning of a long period of signal fading it will not sync, has to be reset.
 - Long periods of signal fading may cause large delays in resynchronization. Even worse the Clock may decode the _wrong time_.
 
-The overall conclusion is that even with this extra resilient library, the Conrad module with its small antena should not be used in this location. Other experiments in Greece report that the situation improved greatly with a larger (100mm) antennas.
+The overall conclusion is that even with this extra resilient library, the Conrad module with its small antena should not be used in this location. Other experiments in Greece report that the situation improved greatly with larger (100mm) antennas.
 
 It should be added that two commercial clocks in the same location, running on batteries, also have large periods of non-synchronization. 
