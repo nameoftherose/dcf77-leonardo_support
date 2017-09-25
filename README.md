@@ -21,3 +21,9 @@ Even so problems remain:
 The overall conclusion is that even with this extra resilient library, the Conrad module with its small antena should not be used in this location. Other experiments in Greece report that the situation improved greatly with larger (100mm) antennas.
 
 It should be added that two commercial clocks in the same location, running on batteries, also have large periods of non-synchronization. 
+## Remarks / Advice
+- Buy the best device you can afford.
+- If you can not find a long antenna, abandon the project
+- Get yourself a DCF clock that displays time of last sync, note the periods of signal availability and perform your experiments during these periods.
+- USB power supplies have a lot of noise, the receiver modules are susceptible to that noise. [Filter the power supply](http://andybrown.me.uk/2015/07/24/usb-filtering/) as best as you can. In the initial phase of the experiment feed your arduino/receiver from batteries.
+- Even if you finally succeed with a short antenna, it is going to be frustrating.
