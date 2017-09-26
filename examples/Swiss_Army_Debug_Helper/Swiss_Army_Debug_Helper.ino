@@ -371,6 +371,7 @@ namespace Parser {
         Serial.println(F("    u: UTC"));
         Serial.println(F("    g: EET/EEST"));
         Serial.println(F("    w: Clock state counts"));
+        Serial.println(F("    t: Reset"));
 //        Serial.println(F("    t: toggle sample mode"));
 //        Serial.println(F("    C: cycle quality_factor_sync_threshold"));
         #if defined(_AVR_EEPROM_H_)
@@ -434,7 +435,7 @@ namespace Parser {
                                 case 'u':  // UTC
                                 case 'g':  // EET/EEST
                                 case 'w':  // clockStateCounts
-//                                case 't':  // sample mode
+                                case 't':  // reset
 //                                case 'C':  // quality_factor_sync_threshold
                                     ::set_mode(c);
                                     return;
@@ -718,13 +719,16 @@ void loop() {
                 }  
                 break;
             }
-//        case 't':
-//            {
+        case 't':
+            {
 //                Serial.print(F("Sample mode changed from "));Serial.print(dcf77_analog_samples);
-////                dcf77_analog_samples = (dcf77_analog_samples == 0)?1:0;
+//                dcf77_analog_samples = (dcf77_analog_samples == 0)?1:0;
 //                Serial.print(F(" to "));Serial.println(dcf77_analog_samples);
-//                break;
-//            }
+                Serial.println(F("User reset"));
+                mode='s';
+                asm volatile ("  jmp 0");         
+                break;
+            }
 //         case 'C':
 //            {
 //                Serial.print(F("Quality_sync threshold changed from "));
