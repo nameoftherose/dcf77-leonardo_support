@@ -1328,7 +1328,7 @@ namespace Internal {
 
         void process_1_Hz_tick(const DCF77_Encoder &decoded_time) {
             uint8_t quality_factor = Clock_Controller::get_overall_quality_factor();
-
+            if (decoded_time.year.val < 17) Clock_Controller::phase_lost_event_handler();
             if (quality_factor > Clock_Controller::Configuration::quality_factor_sync_threshold) {
                 if (clock_state != Clock::synced) {
                     Clock_Controller::sync_achieved_event_handler();
@@ -1342,7 +1342,7 @@ namespace Internal {
             while (true) {
                 switch (clock_state) {
                     case Clock::useless: {
-                        if (quality_factor > 0) {
+                        if (quality_factor > Clock_Controller::Configuration::quality_factor_sync_threshold-1) {
                             clock_state = Clock::dirty;
                             break;  // goto dirty state
                         } else {
@@ -1352,7 +1352,7 @@ namespace Internal {
                     }
 
                     case Clock::dirty: {
-                        if (quality_factor == 0) {
+                        if (quality_factor == Clock_Controller::Configuration::quality_factor_sync_threshold-1) {
                             clock_state = Clock::useless;
                             second_toggle = !second_toggle;
                             local_clock_time.reset();
@@ -1455,7 +1455,7 @@ namespace Internal {
             }
 
             if (clock_state == Clock::unlocked || clock_state == Clock::free) {
-                if (tick >= 1000) {
+                if (tick >= 1000) { // this is executed at the beginning of each second
                     tick -= 1000;
 
                     // If we are not sure about leap seconds we will skip
@@ -1472,6 +1472,7 @@ namespace Internal {
                     second_toggle = !second_toggle;
 
                     ++unlocked_seconds;
+                    if (unlocked_seconds % (3*3600)==0) Clock_Controller::phase_lost_event_handler();
                     if (unlocked_seconds > max_unlocked_seconds) {
                         clock_state = Clock::free;
                     }
@@ -1863,6 +1864,7 @@ namespace Internal {
         // controller will not care to much about them.
         static void process_1_kHz_tick_data(const uint8_t sampled_data) {
             Demodulator.detector(sampled_data);
+            if (Demodulator.get_quality_factor() < Local_Clock.unacceptable_demodulator_quality) return;
             Local_Clock.process_1_kHz_tick();
             Frequency_Control::process_1_kHz_tick();
         }
@@ -2239,3 +2241,4 @@ namespace Internal {
     }
 }
 #endif
+
