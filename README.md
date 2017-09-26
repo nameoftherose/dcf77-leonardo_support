@@ -28,3 +28,4 @@ It should be added that two commercial clocks in the same location, running on b
 - USB power supplies have a lot of noise, the receiver modules are susceptible to that noise. [Filter the power supply](http://andybrown.me.uk/2015/07/24/usb-filtering/) as best as you can. In the initial phase of the experiment feed your arduino/receiver from batteries.
 - Even if you finally succeed with a short antenna, it is going to be frustrating.
 - The extensive use of namespaces and templates neccessitate the use of an editor/ide supporting these features to browse the library sources. vi is not up to the job.
+- `ld` in the comments of [`uint8_t get_quality_factor()`](https://github.com/nameoftherose/dcf77-leonardo_support/blob/0c9fada7f3d207990ec2a5bd2479f801531cd2fa/dcf77.h#L613) is another symbol for the base 2 logarithm.
