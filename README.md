@@ -1,4 +1,7 @@
 # dcf77 library
+## Branch-1 
+This is an attempt to deal with the fading signal issues, whether successful or not yet unknown
+
 This is **a copy of the dcf77-leonardo-support branch** of [Udo Klein's Noise resilent DCF77 decoder library for Arduino ](https://github.com/udoklein/dcf77). This branch was deleted/merged to the master branch by its author before I had the time to create a proper fork, so I had to create this repository from the zip file I had. Here is the original [README](https://github.com/nameoftherose/dcf77-leonardo_support/blob/master/README_original.md)
 
 As it now stands this repository documents an effort to use the library with the Conrad module in a residential area in central Crete. So far the only changes in the sources are in [Swiss_Army_Debug_Helper](https://github.com/nameoftherose/dcf77-leonardo_support/tree/master/examples/Swiss_Army_Debug_Helper). The [logfiles](https://github.com/nameoftherose/dcf77-leonardo_support/tree/master/logfiles) directory contains logs produced by Swiss_Army_Debug_Helper over the testing period.
