@@ -3,8 +3,8 @@ This is **a copy of the dcf77-leonardo-support branch** of [Udo Klein's Noise re
 
 As it now stands this repository documents an effort to use the library with the Conrad module in a residential area in central Crete. So far the only changes in the sources are in [Swiss_Army_Debug_Helper](https://github.com/nameoftherose/dcf77-leonardo_support/tree/master/examples/Swiss_Army_Debug_Helper). The [logfiles](https://github.com/nameoftherose/dcf77-leonardo_support/tree/master/logfiles) directory contains logs produced by Swiss_Army_Debug_Helper over the testing period.
 This effort was very frustrating and so far basically unssucceful. This is not due to a library deficiency but due to:
-- the great periods of time that the signal disappears,
-- the noise coming through the USB power supply lines  
+- the great periods of time that the signal disappears.
+- the noise coming through the USB power supply lines.  
 - the small antenna of the Conrand module, just 50mm.
 - the long testing times (nightime actually as the signal appears during night) necessary to evaluate performance. 
 
@@ -22,8 +22,9 @@ The overall conclusion is that even with this extra resilient library, the Conra
 
 It should be added that two commercial clocks in the same location, running on batteries, also have large periods of non-synchronization. 
 ## Remarks / Advice
-- Buy the best device you can afford.
-- If you can not find a long antenna, abandon the project
+- Buy the best receiver module you can afford.
+- If you can not find a long antenna, abandon the project.
 - Get yourself a DCF clock that displays time of last sync, note the periods of signal availability and perform your experiments during these periods.
 - USB power supplies have a lot of noise, the receiver modules are susceptible to that noise. [Filter the power supply](http://andybrown.me.uk/2015/07/24/usb-filtering/) as best as you can. In the initial phase of the experiment feed your arduino/receiver from batteries.
 - Even if you finally succeed with a short antenna, it is going to be frustrating.
+- The extensive use of namespaces and templates neccessitate the use of an editor/ide supporting these features to browse the library sources. vi is not up to the job.
