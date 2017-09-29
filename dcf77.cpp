@@ -1216,11 +1216,19 @@ namespace Internal {  // DCF77_Encoder
         // bit 53-58  // year + parity
         data.byte_5 = set_bit(year.val>>3, 5, date_parity);
     }
-
+// void DCF77_Encoder::year_estimate() const {
+//      using namespace Debug;
+//
+//      sprint(F("  "));
+//      sprint(year.val,DEC); sprint(":");sprint(year.val<17); sprint(" ");
+//      bcddigits(year.val);
+//      sprint('.');
+//  }
     void DCF77_Encoder::debug() const {
         using namespace Debug;
 
-        sprint(F("  "));
+//      sprint(F("  "));
+//      sprint(year.val,DEC); sprint(":");sprint(year.val<17); sprint(" ");
         bcddigits(year.val);
         sprint('.');
         bcddigits(month.val);
@@ -1413,6 +1421,10 @@ namespace DCF77_Clock {
         Clock_Controller::set_output_handler(output_handler);
         Generic_1_kHz_Generator::setup(input_provider);
     };
+
+    void year_estimate() {
+        Clock_Controller::year_estimate();
+    }
 
     void debug() {
         Clock_Controller::debug();

@@ -257,6 +257,7 @@ namespace DCF77_Clock {
     #endif
     void print(Clock::time_t time);
 
+    void year_estimate();
     void debug();
 
     // determine quality of the DCF77 signal lock
@@ -422,6 +423,7 @@ namespace Internal {
         void advance_second();
         DCF77::tick_t get_current_signal() const;
         void get_serialized_clock_stream(DCF77::serialized_clock_stream &data) const;
+ //       void year_estimate() const;
         void debug() const;
         void debug(const uint16_t cycles) const;
 
@@ -644,14 +646,14 @@ namespace Internal {
                     // noise_type equals uint8_t --> typically standard binners
 
                     // we define the quality factor as
-                    //   (delta) / ld (max + 3)
+                    //   (delta) / ld (max + 3)  ld=log2
 
                     // unfortunately this is prohibitive expensive to compute
 
                     // --> we need some shortcuts
                     // --> we will cheat a lot
 
-                    // lookup for ld(n):
+                    // lookup for ld(n): this table confirms it is log2
                     //   4 -->  2,  6 -->  2.5,   8 -->  3,  12 -->  3.5
                     // above 16 --> only count the position of the leading digit
 
@@ -1328,7 +1330,7 @@ namespace Internal {
 
         void process_1_Hz_tick(const DCF77_Encoder &decoded_time) {
             uint8_t quality_factor = Clock_Controller::get_overall_quality_factor();
-            if (decoded_time.year.val < 17) Clock_Controller::phase_lost_event_handler();
+            //if (decoded_time.year.val < 17) Clock_Controller::phase_lost_event_handler();
             if (quality_factor > Clock_Controller::Configuration::quality_factor_sync_threshold) {
                 if (clock_state != Clock::synced) {
                     Clock_Controller::sync_achieved_event_handler();
@@ -1864,7 +1866,7 @@ namespace Internal {
         // controller will not care to much about them.
         static void process_1_kHz_tick_data(const uint8_t sampled_data) {
             Demodulator.detector(sampled_data);
-            if (Demodulator.get_quality_factor() < Local_Clock.unacceptable_demodulator_quality) return;
+            if (Demodulator.get_quality_factor() < 10) return;
             Local_Clock.process_1_kHz_tick();
             Frequency_Control::process_1_kHz_tick();
         }
@@ -2133,6 +2135,12 @@ namespace Internal {
             Frequency_Control::setup();
         }
 
+        static void year_estimate() {
+            uint8_t year = Year_Decoder.get_time_value().val;
+            sprint(F("  "));
+            sprint(year,DEC); sprint(":");sprint(year<17); sprint(" ");
+            sprint('.');
+        }
         static void debug() {
             DCF77_Encoder now;
             now.second  = Second_Decoder.get_time_value();
