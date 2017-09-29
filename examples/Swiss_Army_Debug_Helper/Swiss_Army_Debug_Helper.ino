@@ -756,6 +756,7 @@ void loop() {
 
             // This seems to print the current time estimation and the  quality triples (x-y:z) dcf.h L 2134
             // for the time it seems to call DCF77_Encoder::debug() dcf.cpp L 1220
+            DCF77_Clock::year_estimate();
             DCF77_Clock::debug(); 
 
             //Clock_Controller::Second_Decoder.debug();
