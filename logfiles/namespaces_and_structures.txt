@@ -17,32 +17,47 @@ namespace Internal
         typedef struct {} serialized_clock_stream  
     namespace TMP
     namespace Arithmetic_Tools
-    struct DCF77_Encoder {
-    namespace Binning
+    struct DCF77_Encoder {}
+    namespace Binning {
         struct lock_quality_tt {}
         struct bins_t {}
         struct Decoder {}
         struct Convoluter {}
         struct Binner {struct bins_t {}}
-        struct DCF77_Demodulator { struct stage_with_averages {}
+    struct DCF77_Demodulator { struct stage_with_averages {}
                                    struct dummy_stage {}
-                                 }
-        struct DCF77_Flag_Decoder {}
-        struct DCF77_Month_Decoder {}
-        struct DCF77_Weekday_Decoder {}
-        struct DCF77_Hour_Decoder {}
-        struct DCF77_Minute_Decoder {}
-        struct DCF77_Second_Decoder {}
-        struct DCF77_Local_Clock {}
-        struct DCF77_Frequency_Control {
-               struct generic_deviation_tracker_t {}
-        }
-        typedef struct {} calibration_state_t;
-        namespace Debug
-        namespace DCF77_Naive_Bitstream_Decoder
-        struct DCF77_No_Frequency_Control {}
-        struct DCF77_Clock_Controller {
+                             }
+    struct DCF77_Flag_Decoder {}
+    struct DCF77_Decade_Decoder{}
+    struct DCF77_Month_Decoder {}
+    struct DCF77_Weekday_Decoder {}
+    struct DCF77_Day_Decoder {}
+    struct DCF77_Hour_Decoder {}
+    struct DCF77_Minute_Decoder {}
+    struct DCF77_Second_Decoder {}
+    struct DCF77_Local_Clock {}
+    struct DCF77_Frequency_Control {
+           struct generic_deviation_tracker_t {};
+           struct averaging_deviation_tracker_t {};
+           typedef struct {} calibration_state_t;
+    }
+
+
+
+    struct DCF77_No_Frequency_Control {}
+        namespace Debug {}
+        namespace DCF77_Naive_Bitstream_Decoder {}
+        struct DCF77_Clock_Controller { /* This is the struct encoding the clock state
+                                           All its members are static, so it need not be
+                                           instantiated, its members are accessed with
+                                           namespace notation.
+                                           A typedef defines the alias Clock_Controller
+                                        */
                typedef struct {} clock_quality_t;
                typedef struct {} clock_quality_factor_t;
-        }
-        namespace Generic_1_kHz_Generator
+               In line dcf77.h:2109 two static declarations
+               define the clock state (namespace Internal)
+               static DCF77_Demodulator<DCF77_Clock_Controller> Demodulator;
+               static DCF77_Local_Clock<DCF77_Clock_Controller> Local_Clock;
+    }
+    namespace Generic_1_kHz_Generator
