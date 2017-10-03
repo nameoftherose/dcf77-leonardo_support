@@ -1,0 +1,1 @@
+tail -f dcf.log | grep --line-buffered 'MES*Z' | sed 's/\([psmhdDMY]\)([0-9]*-[0-9]*:\([0-9]*\))/\1:\2/g;s/MEZ/MEZ /'
