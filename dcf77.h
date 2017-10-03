@@ -257,7 +257,7 @@ namespace DCF77_Clock {
     #endif
     void print(Clock::time_t time);
 
-    void year_estimate();
+    uint8_t year_estimate();
     void debug();
 
     // determine quality of the DCF77 signal lock
@@ -1330,7 +1330,7 @@ namespace Internal {
 
         void process_1_Hz_tick(const DCF77_Encoder &decoded_time) {
             uint8_t quality_factor = Clock_Controller::get_overall_quality_factor();
-            //if (decoded_time.year.val < 17) Clock_Controller::phase_lost_event_handler();
+            //if (decoded_time.year.val < 0x17) Clock_Controller::phase_lost_event_handler();
             if (quality_factor > Clock_Controller::Configuration::quality_factor_sync_threshold) {
                 if (clock_state != Clock::synced) {
                     Clock_Controller::sync_achieved_event_handler();
@@ -1474,7 +1474,7 @@ namespace Internal {
                     second_toggle = !second_toggle;
 
                     ++unlocked_seconds;
-                    if (unlocked_seconds % (3*3600)==0) Clock_Controller::phase_lost_event_handler();
+                    //if (unlocked_seconds % (3*3600)==0) Clock_Controller::phase_lost_event_handler();
                     if (unlocked_seconds > max_unlocked_seconds) {
                         clock_state = Clock::free;
                     }
@@ -1863,10 +1863,10 @@ namespace Internal {
         // called by the 1 kHz generator after handling the input provider
         // the idea is that the input provider and the 1 kHz generator
         // both basically belong to "the hardware". Thus the clock
-        // controller will not care to much about them.
+        // controller will not care too much about them.
         static void process_1_kHz_tick_data(const uint8_t sampled_data) {
             Demodulator.detector(sampled_data);
-            if (Demodulator.get_quality_factor() < 10) return;
+        //  if (Demodulator.get_quality_factor() < 10) return;
             Local_Clock.process_1_kHz_tick();
             Frequency_Control::process_1_kHz_tick();
         }
@@ -2135,11 +2135,8 @@ namespace Internal {
             Frequency_Control::setup();
         }
 
-        static void year_estimate() {
-            uint8_t year = Year_Decoder.get_time_value().val;
-            sprint(F("  "));
-            sprint(year,DEC); sprint(":");sprint(year<17); sprint(" ");
-            sprint('.');
+        static uint8_t year_estimate() {
+            return Year_Decoder.get_time_value().val;
         }
         static void debug() {
             DCF77_Encoder now;

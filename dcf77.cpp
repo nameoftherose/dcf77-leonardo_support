@@ -1422,8 +1422,8 @@ namespace DCF77_Clock {
         Generic_1_kHz_Generator::setup(input_provider);
     };
 
-    void year_estimate() {
-        Clock_Controller::year_estimate();
+    uint8_t year_estimate() {
+        return Clock_Controller::year_estimate();
     }
 
     void debug() {
