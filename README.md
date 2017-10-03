@@ -31,4 +31,4 @@ It should be added that two commercial clocks in the same location, running on b
 - `ld` in the comments of [`uint8_t get_quality_factor()`](https://github.com/nameoftherose/dcf77-leonardo_support/blob/0c9fada7f3d207990ec2a5bd2479f801531cd2fa/dcf77.h#L613) is another symbol for the base 2 logarithm.
 - `structs` with all members `static const` need not be instantiated, they are accessed with the `namespace` notation. This is used in `struct Configuration { .... }` in dcf77.h line 34.
 - `struct`s with all members `static` need not be instantiated, but their members need to, `namespace` notation is used for access. This is used for the library's `struct DCF77_Clock_Controller { ....} ` which contains the clock state. A `typedef` creates the `Clock_Controller` alias for it.
-- the modulo operator is too time consuming in the avr architecture, do not use it in `ist`. The library implements its own modulo functions. 
+- the modulo operator is too time consuming in the avr architecture, do not use it in `isr`s. The library implements its own modulo functions. 
