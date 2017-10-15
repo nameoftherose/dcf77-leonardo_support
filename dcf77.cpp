@@ -506,7 +506,7 @@ namespace Internal {  // DCF77_Second_Decoder
         using namespace Arithmetic_Tools;
 
         // determine sync lock
-        if (this->signal_max - this->noise_max <= lock_threshold || get_time_value() == 3) {
+        if ((/*this->signal_max > 500 && */ this->signal_max - this->noise_max <= lock_threshold) || get_time_value() == 3) {
             // after a lock is acquired this happens only once per minute and it is
             // reasonable cheap to process,
             //
@@ -1216,19 +1216,11 @@ namespace Internal {  // DCF77_Encoder
         // bit 53-58  // year + parity
         data.byte_5 = set_bit(year.val>>3, 5, date_parity);
     }
-// void DCF77_Encoder::year_estimate() const {
-//      using namespace Debug;
-//
-//      sprint(F("  "));
-//      sprint(year.val,DEC); sprint(":");sprint(year.val<17); sprint(" ");
-//      bcddigits(year.val);
-//      sprint('.');
-//  }
+
     void DCF77_Encoder::debug() const {
         using namespace Debug;
 
-//      sprint(F("  "));
-//      sprint(year.val,DEC); sprint(":");sprint(year.val<17); sprint(" ");
+        sprint(F("  "));
         bcddigits(year.val);
         sprint('.');
         bcddigits(month.val);
@@ -1421,10 +1413,6 @@ namespace DCF77_Clock {
         Clock_Controller::set_output_handler(output_handler);
         Generic_1_kHz_Generator::setup(input_provider);
     };
-
-    uint8_t year_estimate() {
-        return Clock_Controller::year_estimate();
-    }
 
     void debug() {
         Clock_Controller::debug();

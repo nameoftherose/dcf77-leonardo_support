@@ -257,7 +257,6 @@ namespace DCF77_Clock {
     #endif
     void print(Clock::time_t time);
 
-    uint8_t year_estimate();
     void debug();
 
     // determine quality of the DCF77 signal lock
@@ -423,7 +422,6 @@ namespace Internal {
         void advance_second();
         DCF77::tick_t get_current_signal() const;
         void get_serialized_clock_stream(DCF77::serialized_clock_stream &data) const;
- //       void year_estimate() const;
         void debug() const;
         void debug(const uint16_t cycles) const;
 
@@ -646,14 +644,14 @@ namespace Internal {
                     // noise_type equals uint8_t --> typically standard binners
 
                     // we define the quality factor as
-                    //   (delta) / ld (max + 3)  ld=log2
+                    //   (delta) / ld (max + 3)
 
                     // unfortunately this is prohibitive expensive to compute
 
                     // --> we need some shortcuts
                     // --> we will cheat a lot
 
-                    // lookup for ld(n): this table confirms it is log2
+                    // lookup for ld(n):
                     //   4 -->  2,  6 -->  2.5,   8 -->  3,  12 -->  3.5
                     // above 16 --> only count the position of the leading digit
 
@@ -1284,7 +1282,7 @@ namespace Internal {
         //    lower it to get a faster second lock
         //    but then risk to garble the successive stages during startup
         //    --> to low and total startup time will increase
-        static const uint8_t lock_threshold = 12;
+        static const uint8_t lock_threshold = 99/*12*/;
 
         DCF77::serialized_clock_stream convolution_kernel;
         // used to determine how many of the predicted bits are actually observed,
@@ -1330,7 +1328,7 @@ namespace Internal {
 
         void process_1_Hz_tick(const DCF77_Encoder &decoded_time) {
             uint8_t quality_factor = Clock_Controller::get_overall_quality_factor();
-            //if (decoded_time.year.val < 0x17) Clock_Controller::phase_lost_event_handler();
+
             if (quality_factor > Clock_Controller::Configuration::quality_factor_sync_threshold) {
                 if (clock_state != Clock::synced) {
                     Clock_Controller::sync_achieved_event_handler();
@@ -1344,7 +1342,7 @@ namespace Internal {
             while (true) {
                 switch (clock_state) {
                     case Clock::useless: {
-                        if (quality_factor > Clock_Controller::Configuration::quality_factor_sync_threshold-1) {
+                        if (quality_factor > 0) {
                             clock_state = Clock::dirty;
                             break;  // goto dirty state
                         } else {
@@ -1354,7 +1352,7 @@ namespace Internal {
                     }
 
                     case Clock::dirty: {
-                        if (quality_factor == Clock_Controller::Configuration::quality_factor_sync_threshold-1) {
+                        if (quality_factor == 0) {
                             clock_state = Clock::useless;
                             second_toggle = !second_toggle;
                             local_clock_time.reset();
@@ -1457,7 +1455,7 @@ namespace Internal {
             }
 
             if (clock_state == Clock::unlocked || clock_state == Clock::free) {
-                if (tick >= 1000) { // this is executed at the beginning of each second
+                if (tick >= 1000) {
                     tick -= 1000;
 
                     // If we are not sure about leap seconds we will skip
@@ -1474,7 +1472,6 @@ namespace Internal {
                     second_toggle = !second_toggle;
 
                     ++unlocked_seconds;
-                    //if (unlocked_seconds % (3*3600)==0) Clock_Controller::phase_lost_event_handler();
                     if (unlocked_seconds > max_unlocked_seconds) {
                         clock_state = Clock::free;
                     }
@@ -1863,10 +1860,9 @@ namespace Internal {
         // called by the 1 kHz generator after handling the input provider
         // the idea is that the input provider and the 1 kHz generator
         // both basically belong to "the hardware". Thus the clock
-        // controller will not care too much about them.
+        // controller will not care to much about them.
         static void process_1_kHz_tick_data(const uint8_t sampled_data) {
             Demodulator.detector(sampled_data);
-        //  if (Demodulator.get_quality_factor() < 10) return;
             Local_Clock.process_1_kHz_tick();
             Frequency_Control::process_1_kHz_tick();
         }
@@ -2135,9 +2131,6 @@ namespace Internal {
             Frequency_Control::setup();
         }
 
-        static uint8_t year_estimate() {
-            return Year_Decoder.get_time_value().val;
-        }
         static void debug() {
             DCF77_Encoder now;
             now.second  = Second_Decoder.get_time_value();
@@ -2246,4 +2239,3 @@ namespace Internal {
     }
 }
 #endif
-
