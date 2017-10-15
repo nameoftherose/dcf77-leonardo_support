@@ -571,10 +571,10 @@ void loop() {
        }
        previousClockState = clockState;
     }
-    if ( clockState == Clock::useless && DCF77_Clock::year_estimate() < 0x17){
-       Serial.println(F("Year <17  reset"));
-       asm volatile ("  jmp 0"); 
-    }
+//    if ( clockState == Clock::useless && DCF77_Clock::year_estimate() < 0x17){
+//       Serial.println(F("Year <17  reset"));
+//       asm volatile ("  jmp 0"); 
+//    }
     digitalWrite(LED_BUILTIN,(clockState==Clock::synced)?HIGH:LOW);
     switch (mode) {
         case 'q': break;
@@ -758,12 +758,12 @@ void loop() {
 
             // This seems to print the current time estimation and the  quality triples (x-y:z) dcf.h L 2134
             // for the time it seems to call DCF77_Encoder::debug() dcf.cpp L 1220
-            sprint(Clock_Controller::Demodulator.samples_per_second);   // these 5 lines are here to check that it is possible to access
-            sprint(Clock_Controller::Second_Decoder.prediction_match);  // the clock state variables via the Clock_Controller:: and its
-            sprint(Clock_Controller::Local_Clock.clock_state);          // members - just tested that it compiles no runtime tests
-            sprint(Clock_Controller::Local_Clock.unlocked_seconds);     //
-            sprint(Clock_Controller::Year_Decoder.get_time_value().val);// should be the same with year_estimate()
-            sprintln(DCF77_Clock::year_estimate(),HEX);
+//            sprint(Clock_Controller::Demodulator.samples_per_second);   // these 5 lines are here to check that it is possible to access
+//            sprint(Clock_Controller::Second_Decoder.prediction_match);  // the clock state variables via the Clock_Controller:: and its
+//            sprint(Clock_Controller::Local_Clock.clock_state);          // members - just tested that it compiles no runtime tests
+//            sprint(Clock_Controller::Local_Clock.unlocked_seconds);     //
+//            sprint(Clock_Controller::Year_Decoder.get_time_value().val);// should be the same with year_estimate()
+//            sprintln(DCF77_Clock::year_estimate(),HEX);
             DCF77_Clock::debug(); 
 
             //Clock_Controller::Second_Decoder.debug();
