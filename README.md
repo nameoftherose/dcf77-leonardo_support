@@ -11,7 +11,7 @@ These modifications are under test in the period 2017-10-15 ÷ 2017-10-22. They 
 -  .h L1344, L1354.. `dirty` transition threshold changed from `1` to `quality_factor_sync_threshold-1`
 -  .h L1997 `get_overall_quality_factor()` returns 0 `if (Second_Decoder.quality < lock_threshold)`. It is hoped this will remove above  side effect.
 -  .h L1998 `get_overall_quality_factor()` returns 0 `if (Year_Decoder.get_time_value().val<0x17)`. Transitions to `synced` and `dirty` should occur only  `if (decoded_time.year.val>=0x17)`.
--  .h L1433 In function `process_1_Hz_tick(...)` the code for the `free` state was modified to call `Clock_Controller::phase_lost_event_handler()` `if (decoded_time.year.val<0x17)`. This is provisionary, if successful, a more specific handler will be written, and the `locked` and `unlocked` states will be treated similarly. `(decoded_time.year.val>=0x17)` should reset the decoders.
+-  .h L1433 In function `process_1_Hz_tick(...)` the code for the `free` state was modified to call `Clock_Controller::phase_lost_event_handler()` `if (decoded_time.year.val<0x17)`. This is provisionary, if successful, a more specific handler will be written, and the `locked` and `unlocked` states will be treated similarly. `(decoded_time.year.val<0x17)` should reset the decoders.
   
   These modifications are not yet tested
 
