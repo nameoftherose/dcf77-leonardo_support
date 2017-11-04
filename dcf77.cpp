@@ -339,7 +339,7 @@ namespace Internal { // DCF77_Year_Decoder
 }
 
 namespace Internal {  // DCF77_Month_Decoder
-/*
+ /*
     void DCF77_Month_Decoder::process_tick(const uint8_t current_second, const uint8_t tick_value) {
         switch (current_second) {
             case 45: month_data.val +=      tick_value; break;
@@ -354,7 +354,7 @@ namespace Internal {  // DCF77_Month_Decoder
             default: month_data.val = 0;
         }
     }
-*/
+ */
     void DCF77_Month_Decoder::process_tick(const uint8_t current_second, const uint8_t tick_value) {
         BCD_binning<uint8_t, 1, 45, 5, false>(current_second, tick_value);
     }
@@ -366,7 +366,7 @@ namespace Internal {  // DCF77_Month_Decoder
 }
 
 namespace Internal {  // DCF77_Weekday_Decoder
-/*
+ /*
     void DCF77_Weekday_Decoder::process_tick(const uint8_t current_second, const uint8_t tick_value) {
         switch (current_second) {
             case 42: weekday_data.val +=      tick_value; break;
@@ -378,7 +378,7 @@ namespace Internal {  // DCF77_Weekday_Decoder
             default: weekday_data.val = 0;
         }
     }
-*/
+ */
 
     void DCF77_Weekday_Decoder::process_tick(const uint8_t current_second, const uint8_t tick_value) {
         BCD_binning<uint8_t, 1, 42, 3, false>(current_second, tick_value);
@@ -391,7 +391,7 @@ namespace Internal {  // DCF77_Weekday_Decoder
 }
 
 namespace Internal {  // DCF77_Day_Decoder
-/*
+ /*
     void DCF77_Day_Decoder::process_tick(const uint8_t current_second, const uint8_t tick_value) {
         switch (current_second) {
             case 36: day_data.val +=      tick_value; break;
@@ -406,7 +406,7 @@ namespace Internal {  // DCF77_Day_Decoder
             default: day_data.val = 0;
         }
     }
-*/
+ */
 
     void DCF77_Day_Decoder::process_tick(const uint8_t current_second, const uint8_t tick_value) {
         BCD_binning<uint8_t, 1, 36, 6, false>(current_second, tick_value);
@@ -419,7 +419,7 @@ namespace Internal {  // DCF77_Day_Decoder
 }
 
 namespace Internal {  // DCF77_Hour_Decoder
-/*
+ /*
     void DCF77_Hour_Decoder::process_tick(const uint8_t current_second, const uint8_t tick_value) {
         switch (current_second) {
             case 29: hour_data.val +=      tick_value; break;
@@ -436,7 +436,7 @@ namespace Internal {  // DCF77_Hour_Decoder
             default: hour_data.val = 0;
         }
     }
-*/
+ */
     void DCF77_Hour_Decoder::process_tick(const uint8_t current_second, const uint8_t tick_value) {
         BCD_binning<uint8_t, 1, 29, 6, true>(current_second, tick_value);
     }
@@ -448,7 +448,7 @@ namespace Internal {  // DCF77_Hour_Decoder
 }
 
 namespace Internal {  // DCF77_Minute_Decoder
-/*
+ /*
     void DCF77_Minute_Decoder::process_tick(const uint8_t current_second, const uint8_t tick_value) {
         switch (current_second) {
             case 21: minute_data.val +=      tick_value; break;
@@ -466,7 +466,7 @@ namespace Internal {  // DCF77_Minute_Decoder
             default: minute_data.val = 0;
         }
     }
-*/
+ */
 
     void DCF77_Minute_Decoder::process_tick(const uint8_t current_second, const uint8_t tick_value) {
         BCD_binning<uint8_t, 1, 21, 7, true>(current_second, tick_value);
@@ -735,13 +735,13 @@ namespace Internal {  // DCF77_Encoder
 
     void DCF77_Encoder::reset() {
         second      = 0;
-        minute.val  = 0x00;
-        hour.val    = 0x00;
-        day.val     = 0x01;
-        month.val   = 0x01;
-        year.val    = 0x00;
-        weekday.val = 0x01;
-        uses_summertime                = false;
+        minute.val  = 0x07/*0x00*/;
+        hour.val    = 0x18/*0x00*/;
+        day.val     = 0x26/*0x01*/;
+        month.val   = 0x10/*0x01*/;
+        year.val    = 0x17/*0x00*/;
+        weekday.val = 0x03/*0x01*/;
+        uses_summertime                = true/*false*/;
         abnormal_transmitter_operation = false;
         timezone_change_scheduled      = false;
         leap_second_scheduled          = false;
@@ -750,6 +750,7 @@ namespace Internal {  // DCF77_Encoder
         undefined_uses_summertime_output                = false;
         undefined_abnormal_transmitter_operation_output = false;
         undefined_timezone_change_scheduled_output      = false;
+        sprint("DCF77_Encoder::reset() (.cpp L736) Day=");sprintln(day.val,HEX);
     }
 
     uint8_t DCF77_Encoder::get_weekday() const {
@@ -1405,6 +1406,7 @@ namespace DCF77_Clock {
     typedef DCF77_Clock_Controller<Configuration, DCF77_Frequency_Control> Clock_Controller;
 
     void setup() {
+        sprintln("DCF77_Clock::setup .h L1407");
         Clock_Controller::setup();
     }
 
@@ -1780,20 +1782,20 @@ namespace Internal {
             defined(__AVR_AT90USB646__) || \
             defined(__AVR_AT90USB1286__)
 
-        // 249 + 1 == 250 == 250 000 / 1000 =  (16 000 000 / 64) / 1000
-        // For 16 MHz this will result in 1 ms ticks, for 8 Mhz it will result
-        // in 2 ms ticks.
-        const uint8_t OCR2A_standard = 249;
-        #if (F_CPU == 16000000L) or (F_CPU == 8000000L)
+         // 249 + 1 == 250 == 250 000 / 1000 =  (16 000 000 / 64) / 1000
+         // For 16 MHz this will result in 1 ms ticks, for 8 Mhz it will result
+         // in 2 ms ticks.
+         const uint8_t OCR2A_standard = 249;
+         #if (F_CPU == 16000000L) or (F_CPU == 8000000L)
             // 250 / 16 000 000 = 1 / 64 000
             const uint16_t inverse_timer_resolution = 64000uL;
-        #else
+         #else
             #error Unsupported CPU clock frequency, only 8 MHz or 16 MHz clocks are supported.
-        #endif
-        const uint8_t OCR2A_slower = OCR2A_standard + 1;
-        const uint8_t OCR2A_faster = OCR2A_standard - 1;
+         #endif
+         const uint8_t OCR2A_slower = OCR2A_standard + 1;
+         const uint8_t OCR2A_faster = OCR2A_standard - 1;
 
-        void init_timer_2() {
+         void init_timer_2() {
             // Timer 2 CTC mode, prescaler 64
             TCCR2B = (0<<WGM22) | (1<<CS22);
             TCCR2A = (1<<WGM21) | (0<<WGM20);
@@ -1802,21 +1804,22 @@ namespace Internal {
 
             // enable Timer 2 interrupts
             TIMSK2 = (1<<OCIE2A);
-        }
+         }
 
-        void stop_timer_0() {
+         void stop_timer_0() {
             // ensure that the standard timer interrupts will not
             // mess with msTimer2
             TIMSK0 = 0;
-        }
+         }
 
-        void setup(const Clock::input_provider_t input_provider) {
+         void setup(const Clock::input_provider_t input_provider) {
+            sprintln("Generic_1_kHz_Generator::setup .cpp L1813");
             init_timer_2();
             stop_timer_0();
             the_input_provider = input_provider;
-        }
+         }
 
-        void isr_handler() {
+         void isr_handler() {
             cumulated_phase_deviation += adjust_pp16m;
             // 250 / 16 000 000 = 1 / 64 000
             if (cumulated_phase_deviation >= inverse_timer_resolution) {
@@ -1836,25 +1839,25 @@ namespace Internal {
 
             Clock_Controller::process_1_kHz_tick_data(the_input_provider());
             #if F_CPU == 8000000L
-            // if we are running @ 8Mhz, sample twice per period to achieve
-            // 1 kHz sampling rate. Of course the samples wil not be evenly spaced.
-            // but this does not really matter. Effectively we are still
-            // oversampling 5 times. Also the resolution of the phase lock
-            // is only 10 ms. Thus 1 ms jitter in the sample rate is fully
-            // acceptable.
-            // The approach is very slightly better results than
-            // sampling at 500 Hz. The main advantage is that all library
-            // users that rely on 1 kHz ticks will still work if they
-            // do not rely on evenly spaced ticks. It also implies that
-            // the code changes for the 8 MHz version are minimized and thus
-            // the potential for introducing bugs is lower.
-            Clock_Controller::process_1_kHz_tick_data(the_input_provider());
+             // if we are running @ 8Mhz, sample twice per period to achieve
+             // 1 kHz sampling rate. Of course the samples wil not be evenly spaced.
+             // but this does not really matter. Effectively we are still
+             // oversampling 5 times. Also the resolution of the phase lock
+             // is only 10 ms. Thus 1 ms jitter in the sample rate is fully
+             // acceptable.
+             // The approach is very slightly better results than
+             // sampling at 500 Hz. The main advantage is that all library
+             // users that rely on 1 kHz ticks will still work if they
+             // do not rely on evenly spaced ticks. It also implies that
+             // the code changes for the 8 MHz version are minimized and thus
+             // the potential for introducing bugs is lower.
+             Clock_Controller::process_1_kHz_tick_data(the_input_provider());
             #endif
         }
         #endif
 
         #if defined(__AVR_ATmega32U4__)
-        void init_timer_3() {
+         void init_timer_3() {
             // Timer 3 CTC mode, prescaler 64
             TCCR3B = (0<<WGM33) | (1<<WGM32) | (1<<CS31) | (1<<CS30);
             TCCR3A = (0<<WGM31) | (0<<WGM30);
@@ -1864,21 +1867,21 @@ namespace Internal {
 
             // enable Timer 3 interrupts
             TIMSK3 = (1<<OCIE3A);
-        }
+         }
 
-        void stop_timer_0() {
+         void stop_timer_0() {
             // ensure that the standard timer interrupts will not
             // mess with msTimer2
             TIMSK0 = 0;
-        }
+         }
 
-        void setup(const Clock::input_provider_t input_provider) {
+         void setup(const Clock::input_provider_t input_provider) {
             init_timer_3();
             stop_timer_0();
             the_input_provider = input_provider;
-        }
+         }
 
-        void isr_handler() {
+         void isr_handler() {
             cumulated_phase_deviation += adjust_pp16m;
             // 1 / 250 / 64000 = 1 / 16 000 000
             if (cumulated_phase_deviation >= 64000) {
@@ -1898,21 +1901,21 @@ namespace Internal {
             }
 
             Clock_Controller::process_1_kHz_tick_data(the_input_provider());
-        }
+         }
         #endif
 
         #if defined(__SAM3X8E__)
-        void setup(const Clock::input_provider_t input_provider) {
+         void setup(const Clock::input_provider_t input_provider) {
             // no need to init systicks timer as it runs @1kHz anyway
             the_input_provider = input_provider;
-        }
+         }
 
-        const uint32_t ticks_per_ms = SystemCoreClock/1000;
-        const uint32_t ticks_per_us = ticks_per_ms/1000;
-        // 1000 / 16 000 000 = 1 / 16 000
-        const uint16_t inverse_timer_resolution = 16000;
+         const uint32_t ticks_per_ms = SystemCoreClock/1000;
+         const uint32_t ticks_per_us = ticks_per_ms/1000;
+         // 1000 / 16 000 000 = 1 / 16 000
+         const uint16_t inverse_timer_resolution = 16000;
 
-        void isr_handler() {
+         void isr_handler() {
             cumulated_phase_deviation += adjust_pp16m;
             if (cumulated_phase_deviation >= inverse_timer_resolution) {
                 cumulated_phase_deviation -= inverse_timer_resolution;
@@ -1929,7 +1932,7 @@ namespace Internal {
             }
 
             Clock_Controller::process_1_kHz_tick_data(the_input_provider());
-        }
+         }
         #endif
     }
 }
@@ -1942,23 +1945,23 @@ namespace Internal {
     defined(__AVR_ATmega2560__) || \
     defined(__AVR_AT90USB646__) || \
     defined(__AVR_AT90USB1286__)
-ISR(TIMER2_COMPA_vect) {
+ ISR(TIMER2_COMPA_vect) {
     Internal::Generic_1_kHz_Generator::isr_handler();
-}
+ }
 #endif
 
 #if defined(__AVR_ATmega32U4__)
-ISR(TIMER3_COMPA_vect) {
+ ISR(TIMER3_COMPA_vect) {
     Internal::Generic_1_kHz_Generator::isr_handler();
-}
+ }
 #endif
 
 #if defined(__SAM3X8E__)
-extern "C" {
+ extern "C" {
     // sysTicks will be triggered once per 1 ms
     int sysTickHook(void) {
         Internal::Generic_1_kHz_Generator::isr_handler();
         return 0;
     }
-}
+ }
 #endif
