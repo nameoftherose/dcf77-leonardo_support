@@ -26,6 +26,15 @@
 #if defined(__AVR__)
 #include <avr/eeprom.h>
 
+///
+extern uint8_t year_val;
+uint8_t year_val=99;
+extern uint8_t year_error;
+uint8_t year_error=0;
+extern uint16_t year_error_count;
+uint16_t year_error_count =0;
+///
+
 // do not use 0 as this will interfere with the DCF77 lib's EEPROM_base
 const uint16_t EEPROM_base = 0x20;
 
@@ -371,6 +380,7 @@ namespace Parser {
         Serial.println(F("    g: EET/EEST"));
         Serial.println(F("    w: Clock state counts"));
         Serial.println(F("    t: Reset"));
+        Serial.println(F("    y: Date Decoders Reset"));
 //        Serial.println(F("    t: toggle sample mode"));
 //        Serial.println(F("    C: cycle quality_factor_sync_threshold"));
         #if defined(_AVR_EEPROM_H_)
@@ -396,7 +406,7 @@ namespace Parser {
     void parse() {
         enum mode { waiting=0, led_display_command, debug_output_command};
 
-        static mode parser_mode = waiting;
+        static mode parser_mode = debug_output_command /* waiting*/;
 
         if (Serial.available()) {
             const char c = Serial.read();
@@ -435,6 +445,7 @@ namespace Parser {
                                 case 'g':  // EET/EEST
                                 case 'w':  // clockStateCounts
                                 case 't':  // reset
+                                case 'y':  // reset date decoders
 //                                case 'C':  // quality_factor_sync_threshold
                                     ::set_mode(c);
                                     return;
@@ -652,11 +663,13 @@ void loop() {
             {
                 Clock::time_t now;
                 DCF77_Clock::get_current_time(now);
-
-                if (now.month.val > 0) {
-                    switch (DCF77_Clock::get_clock_state()) {
+                Clock::clock_state_t clock_state = Clock_Controller::Local_Clock.clock_state/*DCF77_Clock::get_clock_state()*/;
+//                sprint("Render Time: ");sprint(clock_state);sprint(",");sprint(clock_state != Clock::useless);sprint(" ");
+                if (clock_state != Clock::useless /*now.month.val > 0*/) {
+                    switch (clock_state) {
                         case Clock::useless:   Serial.print(F("useless: ")); break;
                         case Clock::dirty:     Serial.print(F("dirty:   ")); break;
+                        case Clock::free:      Serial.print(F("free:    ")); break;
                         case Clock::synced:    Serial.print(F("synced:  ")); break;
                         case Clock::locked:    Serial.print(F("locked:  ")); break;
                         case Clock::unlocked:  Serial.print(F("unlocked:")); break;
@@ -740,6 +753,7 @@ void loop() {
 //                Serial.println((int)Configuration::quality_factor_sync_threshold);
 //                break;
 //            }
+        case 'y':{ year_error = 1 ; break;}
         case 'm':  // multi mode scope + fall through to debug
             Serial.println();
             Scope::print();
@@ -756,14 +770,22 @@ void loop() {
                 Serial.println();
             }
 
-            // This seems to print the current time estimation and the  quality triples (x-y:z) dcf.h L 2134
-            // for the time it seems to call DCF77_Encoder::debug() dcf.cpp L 1220
+
 //            sprint(Clock_Controller::Demodulator.samples_per_second);   // these 5 lines are here to check that it is possible to access
 //            sprint(Clock_Controller::Second_Decoder.prediction_match);  // the clock state variables via the Clock_Controller:: and its
 //            sprint(Clock_Controller::Local_Clock.clock_state);          // members - just tested that it compiles no runtime tests
 //            sprint(Clock_Controller::Local_Clock.unlocked_seconds);     //
-//            sprint(Clock_Controller::Year_Decoder.get_time_value().val);// should be the same with year_estimate()
+            sprint("Clock State - state:");sprint(Clock_Controller::Local_Clock.clock_state);
+            sprint(" state(): ");sprint(DCF77_Clock::get_clock_state());sprint(",");sprint(Clock_Controller::Local_Clock.clock_state != Clock::useless );
+            sprint(" Year Estimate: ");
+            sprint(Clock_Controller::Year_Decoder.get_time_value().val);// should be the same with year_estimate()
+            sprint(" Year_val: ");sprint(year_val);
+            sprint(" Year Error Count: ");sprint(year_error_count);
+            sprintln();
 //            sprintln(DCF77_Clock::year_estimate(),HEX);
+
+            // This seems to print the current time estimation and the  quality triples (x-y:z) dcf.h L 2134
+            // for the time it seems to call DCF77_Encoder::debug() dcf.cpp L 1220
             DCF77_Clock::debug(); 
 
             //Clock_Controller::Second_Decoder.debug();
