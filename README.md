@@ -31,6 +31,6 @@ In Swiss_Army_Debug_Helper.ino code was added to
   -  Print the values of the above debug variables.
   -  print the state when `free`. 
   
-  These modifications are under test.
+  These modifications are under test since 2017.10.26 18:06, with very encouraging results. During these 10 days no case of wrong date/time has occured. Clock has syncronized every night, it is in synced state for 36% of the time.
   
 
