@@ -1,6 +1,7 @@
 # dcf77 library
 ## Branch-1 
-This is an attempt to deal with the fading signal issues, whether successful or not yet unknown
+This is an attempt to deal with the fading signal issue.
+Following a 31 days continuous test,during which the Clock synchronized every night without a single occurence of synchronization to the wrong time, it is reasonable to conclude that the code of this branch deals satisfactory with the fading issue when used with the Conrad module in central Crete.
 ### 2017-10-15
 The following changes were made:
 -  .ino L724 A manual reset added ('t')
