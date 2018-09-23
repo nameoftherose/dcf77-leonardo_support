@@ -34,6 +34,8 @@ In Swiss_Army_Debug_Helper.ino code was added to
   
   These modifications are under test since 2017.10.26 18:06, with very encouraging results. During these 10 days no case of wrong date/time has occured. Clock has syncronized every night, it is in synced state for 36% of the time.
   ![a](https://github.com/nameoftherose/dcf77-leonardo_support/blob/master-1/logfiles/qf_2017-10-26.png)
-  Source code has been uploaded.
-  
+  Source code has been uploaded.  
+  This version has been operating till August 2018. During these 8 months only two cases of error (in the hour field) have been observed and the algorithm self-corrected (Of course there may have been other errors that remainded unobserved.  
+  This version assumes that  the dcf77 module will default to zero signal when the signal fades, that is why the `if (decoded_time.year.val<0x17)` test has been so successful. But this behaviour, which applies to the Conrad module used, can not be expected of other modules.
+  In a future version a weekday incomsistency test will be added to deal with other modules.
 
