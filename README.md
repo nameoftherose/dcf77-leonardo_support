@@ -54,7 +54,8 @@ This version implements a week day inconsistency constraint
    `inconsistentWeekDayCounter` calculation added
 - The weekday calculation in `get_overall_quality_factor()` is only done
            `if (date_quality_factor > 0 && weekday_quality_factor > 0)`
-   This delays the inconsistency detection, should be done every time
-   Code has been modified so that the calculation always takes place  
+   This delays the inconsistency detection, should be done every time.  
+   Code has been modified so that the calculation always takes place.  
+
 This is under test since 2018-09-21. Test successful so far.  
 Source code in [Swiss_Army_Debug_Helper_20180921.zip](https://github.com/nameoftherose/dcf77-leonardo_support/blob/master-1/Swiss_Army_Debug_Helper_20180921.zip)
