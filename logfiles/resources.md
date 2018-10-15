@@ -1,8 +1,9 @@
 [various antenna calculators](http://zerobeat.net/G4FGQ/page3.html)   
 [Eclipsemob: a 60kHz receiver design for WWVB](http://eng.umb.edu/~eclipsemob/index.php/homepage/build/126-receiver-instructions-2)
  and [their antenna construction](http://eng.umb.edu/~eclipsemob/index.php/homepage/build/117-eclipsemob-antenna-instructions)  
-[DCF7 Antenna Design](http://www.c-max-time.com/tech/antenna.php)  
+[DCF77 Antenna Design](http://www.c-max-time.com/tech/antenna.php)  
 [Notes on Domestic VLF Reception](http://abelian.org/vlfrx/)  
+[RFsource Kotsalidis Theodoros LF ferrite antennae](http://www.rfsource.gr/) Nikis 61 str. 17455 Alimos Tel:  +30 210 982 9640  |  Cell:  +30 697 760 1029  
 [Coil Inductance Calulation](http://coil32.net/)  
 [Transformer Design](https://en.wikibooks.org/wiki/Electronics/Transformer_Design)  
 [Various Papers on Antennas and Coils](http://g3rbj.co.uk/)  
