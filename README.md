@@ -59,3 +59,8 @@ This version implements a week day inconsistency constraint
 
 This is under test since 2018-09-21. Test successful so far.  
 Source code in [Swiss_Army_Debug_Helper_20180921.zip](https://github.com/nameoftherose/dcf77-leonardo_support/blob/master-1/Swiss_Army_Debug_Helper_20180921.zip)
+
+### 2019-03-31
+The clock, runnig the 2018-09-21 version, while trying to acquire time after a power cut, synced to the wrong time. The minute field was off by 12min. After 3 minutes the decoders were reset (I do not know why) and after about 30min the clock synced correctly.
+
+Perhaps the minute decoder should be reset too when an year error or weekday inconsistency is detected.
