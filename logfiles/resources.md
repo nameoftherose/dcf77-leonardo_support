@@ -6,4 +6,6 @@
 [Coil Inductance Calulation](http://coil32.net/)  
 [Transformer Design](https://en.wikibooks.org/wiki/Electronics/Transformer_Design)  
 [Various Papers on Antennas and Coils](http://g3rbj.co.uk/)  
-[Filtering the 5V USB power supply line](http://andybrown.me.uk/2015/07/24/usb-filtering/)
+[Filtering the 5V USB power supply line](http://andybrown.me.uk/2015/07/24/usb-filtering/)  
+[Ferrite rod loop antenna for MW ](http://www.sarmento.eng.br/Loop_Ferrite_Rod_Antenna.htm)  
+[Θεόδωρος Κωτσαλιδης](http://www.sv2czf.com/) RX ferrite rod antennae
