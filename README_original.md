@@ -1,7 +1,7 @@
 # dcf77 library
 
 
-Noise resilent DCF77 decoder library for Arduino.
+Noise resilient DCF77 decoder library for Arduino.
 
 (c) Udo Klein -- http://www.blinkenlight.net
 
