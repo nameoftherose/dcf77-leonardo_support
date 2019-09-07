@@ -8,4 +8,8 @@
 [Various Papers on Antennas and Coils](http://g3rbj.co.uk/)  
 [Filtering the 5V USB power supply line](http://andybrown.me.uk/2015/07/24/usb-filtering/)  
 [Ferrite rod loop antenna for MW ](http://www.sarmento.eng.br/Loop_Ferrite_Rod_Antenna.htm)  
-[Θεόδωρος Κωτσαλιδης](http://www.sv2czf.com/) RX ferrite rod antennae
+[Θεόδωρος Κωτσαλιδης](http://www.sv2czf.com/) RX ferrite rod antennae  
+[A DCF77 AM Superhet Receiver](http://www.avr-asm-tutorial.net/avr_en/apps/dcf77_m16/dcf77_superhet/dcf77_superhet.html)  
+[DCF77 receivers](http://www.avr-asm-tutorial.net/avr_en/apps/dcf77_rcvr/dcf77_rcvr.html)  
+[DCF77 Preamplifier](https://www.eeweb.com/extreme-circuits/dcf77-preamplifier)  
+[An active DCF77 antenna](http://www.vaxman.de/projects/dcf_antenna/dcf_antenna.html)
