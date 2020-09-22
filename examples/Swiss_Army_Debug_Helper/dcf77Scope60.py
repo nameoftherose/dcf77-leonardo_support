@@ -112,6 +112,16 @@ txt=[' 0 ']+[' X ']*14+['ATO','TZC','CES','CET','LSA','SET','M01','M02','M04','M
         'MP1','H01','H02','H04','H08','H10','H20','HP2','D01','D02','D04','D08','D10','D20','WD1','WD2',
         'WD4','M01','M02','M04','M08','M10','Y01','Y02','Y04','Y08','Y10','Y20','Y40','Y80','DP3','MSM']
 def main(w):
+    height,width=w.getmaxyx()
+   #print >>sys.stderr,height,width
+    try:assert height >=60 and width >=150
+    except:
+        w.addstr(0,0,      'screen size: (%dx%d). Should be at least (60x150)'%(height,width))
+        w.refresh()
+        sleep(10)
+       #print >>sys.stderr,'screen size: (%dx%d). Should be at least (60x150)'%(height,width)
+        sys.stderr.flush()
+        return
    #f=readlines_then_tail(open('putty.log'))
     t=None;ts='';t0=datetime.now().replace(second=0,microsecond=0)
     timestampRE=re.compile(r'\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d{3})?\] ');timestamp=None
