@@ -120,7 +120,7 @@ def main(w):
         w.refresh()
         sleep(10)
        #print >>sys.stderr,'screen size: (%dx%d). Should be at least (60x150)'%(height,width)
-        sys.stderr.flush()
+       #sys.stderr.flush()
         return
    #f=readlines_then_tail(open('putty.log'))
     t=None;ts='';t0=datetime.now().replace(second=0,microsecond=0)
