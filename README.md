@@ -64,3 +64,6 @@ Source code in [Swiss_Army_Debug_Helper_20180921.zip](https://github.com/nameoft
 The clock, runnig the 2018-09-21 version, while trying to acquire time after a power cut, synced to the wrong time. The minute field was off by 12min. After 3 minutes the decoders were reset (I do not know why) and after about 30min the clock synced correctly.
 
 Perhaps the minute decoder should be reset too when an year error or weekday inconsistency is detected.
+
+### 2022-05-29
+The clock synced to the wrong time during the night of 2022-05-28 to 2022-05-29  . The hour field was off by -3600s. It remained with wrong hour till the night of 2022-05-29 to 2022-05-30. The commercial clock nearby has the same error (hour field 1 hour back) for 3 days.
